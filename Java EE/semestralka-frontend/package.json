@@ -1,0 +1,63 @@
+{
+    "name": "todo-app",
+    "version": "1.0.0",
+    "description": "Todo application for learning purpose",
+    "main": "index.js",
+    "author": "Martin Skalický",
+    "private": true,
+    "proxy": "http://127.0.0.1:8080/todoList",
+    "scripts": {
+        "dev": "webpack-dev-server --config=config/webpack.dev.js --hot",
+        "dev:reload": "webpack-dev-server --config=config/webpack.dev.js",
+        "dev:style": "cross-env MAP_STYLE=true webpack-dev-server --config=config/webpack.dev.js --hot",
+        "build": "webpack --config=config/webpack.prod.js",
+        "analyze": "cross-env ENABLE_ANALYZER=true yarn build",
+        "test": "jest",
+        "test:coverage": "jest --coverage"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.0.2",
+        "@material-ui/icons": "^4.0.1"
+    },
+    "devDependencies": {
+        "babel-core": "^6.26.3",
+        "babel-loader": "^7.1.5",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-preset-env": "^1.7.0",
+        "babel-preset-react": "^6.24.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "classnames": "^2.2.6",
+        "clean-webpack-plugin": "^0.1.19",
+        "cross-env": "^5.2.0",
+        "css-loader": "^1.0.0",
+        "file-loader": "^1.1.11",
+        "html-webpack-plugin": "^3.2.0",
+        "jest": "^23.4.1",
+        "mini-css-extract-plugin": "^0.4.1",
+        "node-sass": "^4.14.1",
+        "optimize-css-assets-webpack-plugin": "^5.0.0",
+        "ramda": "^0.26.1",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-router-dom": "^5.0.0",
+        "sass-loader": "^7.0.3",
+        "style-loader": "^0.21.0",
+        "url-loader": "^1.0.1",
+        "webpack": "^4.44.2",
+        "webpack-bundle-analyzer": "^2.13.1",
+        "webpack-cli": "^3.3.12",
+        "webpack-dev-server": "^3.11.0",
+        "webpack-manifest-plugin": "^2.2.0",
+        "webpack-merge": "^5.1.4"
+    },
+    "jest": {
+        "setupTestFrameworkScriptFile": "<rootDir>/config/setupTests.js",
+        "snapshotSerializers": [
+            "enzyme-to-json/serializer"
+        ],
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|css)$": "<rootDir>/src/utils/empty-module.js"
+        }
+    }
+}

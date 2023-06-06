@@ -1,0 +1,53 @@
+prefix airport: <http://airports.dev/resource/airport/> 
+prefix country: <http://airports.dev/resource/country/> 
+prefix city: <http://airports.dev/resource/city/> 
+prefix location: <http://airports.dev/resource/location/> 
+prefix xsd: <http://www.w3.org/2001/XMLSchema#> 
+prefix dbo: <http://dbpedia.org/ontology/>
+prefix dbp: <http://dbpedia.org/property/>
+prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+CONSTRUCT {
+  ?IRI a dbo:Airport, geo:Point ;
+      rdfs:label ?nameWithLang ;
+      dbp:name ?nameWithLang ;
+      dbo:city ?IRIcity ;
+
+      geo:location  ?geometry ;
+      geo:lat ?latitudeWithType ;
+      geo:long ?longitudeWithType ;
+
+      dbo:iataLocationIdentifier ?iataWithType ;
+      dbo:icaoLocationIdentifier ?icaoWithType .
+  
+  ?IRIcity a dbo:City ;
+    rdfs:label ?cityWithLang ;
+    dbp:name   ?cityWithLang ;
+    dbp:country ?IRIcountry .
+
+  ?IRIcountry a dbo:Country ;
+    dbp:name ?countryWithLang ;
+    rdfs:label ?countryWithLang .
+}
+FROM <file:airports.csv>
+WHERE {
+  BIND (REPLACE(REPLACE(?country, "\\\\", ""), "'", "") as ?country_clean)
+  BIND (REPLACE(REPLACE(?city, "\\\\", ""), "'", "") as ?city_clean)
+  BIND (STR(tarql:expandPrefix("airport")) as ?airportNamespace)
+  BIND (IRI(CONCAT(?airportNamespace, ?icao)) AS ?IRI)
+  BIND (STR(tarql:expandPrefix("location")) as ?locationNamespace)
+  BIND (IRI(CONCAT(?locationNamespace, STR(?ROWNUM))) AS ?IRIlocation)
+  BIND (STR(tarql:expandPrefix("country")) as ?countryNamespace)
+  BIND (IRI(CONCAT(?countryNamespace, REPLACE(lcase(?country_clean), " ", "_"))) AS ?IRIcountry)
+  BIND (STR(tarql:expandPrefix("city")) as ?cityNamespace)
+  BIND (IRI(CONCAT(?cityNamespace, REPLACE(CONCAT(lcase(?country_clean), " ", CONCAT(lcase(?city_clean))), " ", "_"))) AS ?IRIcity)
+  BIND (STRLANG(?name, "en") AS ?nameWithLang)
+  BIND (STRLANG(?city, "en") AS ?cityWithLang)
+  BIND (STRLANG(?country, "en") AS ?countryWithLang)
+  BIND (STRDT(?iata, xsd:string) AS ?iataWithType)
+  BIND (STRDT(?icao, xsd:string) AS ?icaoWithType)
+  BIND (STRDT(?latitude, xsd:decimal) AS ?latitudeWithType)
+  BIND (STRDT(?longitude, xsd:decimal) AS ?longitudeWithType)
+  BIND (STRDT(CONCAT("POINT(", ?latitude, " ", ?longitude, ")"), <http://www.openlinksw.com/schemas/virtrdf#Geometry>) AS ?geometry)
+}

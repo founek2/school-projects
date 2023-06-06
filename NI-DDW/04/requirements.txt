@@ -1,0 +1,6 @@
+jupyterlab
+numpy
+matplotlib
+pandas
+networkx
+apyori

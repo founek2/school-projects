@@ -1,0 +1,36 @@
+5 2
+....x
+.xx.x
+
+10 2
+.xxx.x.xxx
+xx.x...x..
+vysledek -1
+
+5 8
+.....
+xxxxx
+vysledek 1
+
+5 2 ....x .xx.x 3
+
+10 3
+..xx...x..
+......x.xx
+vysledek 5
+
+10 3
+.xxx...xxx
+xxx.xxx.xx
+6
+
+15 4
+.xxxxxx.x...xxx
+xxx...xxx.x.xxx
+5
+
+
+19 2
+.xx....x.x..x.xxx..
+xx...xx...xxx...xxx
+12

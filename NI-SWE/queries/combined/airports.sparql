@@ -1,0 +1,32 @@
+# For every airport count how many flight records exists which has origin 
+#    or destination as the airport
+# result will contain airport name, country of the airport, country ISO-3 code, origin count, destination count
+
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+prefix airport:  <http://airports.dev/resource/airport/>
+prefix my: <http://localhost/vocabulary/terms/> 
+
+SELECT 
+?name ?countryName ?countryIsoCode (count( ?recordOrigin) as ?originRecords) (count( ?recordDestination) as ?destinationRecords)
+WHERE {
+    ?airport a dbo:Airport .
+    ?airport dbp:name ?name .
+    
+    ?airport owl:sameAs ?airportOfRecords . #link
+    OPTIONAL {
+        ?recordOrigin my:origin ?airportOfRecords  .
+    }
+    OPTIONAL {
+        ?recordDestination my:destination ?airportOfRecords  .
+    }
+  
+    ?airport dbo:city ?city .
+    ?city dbp:country ?country .
+ 	?country dbp:name ?countryName .
+    ?country owl:sameAs ?country2 . #link
+    ?country2 dbo:iso31661Code ?countryIsoCode .
+  
+  	FILTER(strlen(?countryIsoCode) = 3)
+} GROUP BY ?name ?countryName ?countryIsoCode ORDER BY ?name

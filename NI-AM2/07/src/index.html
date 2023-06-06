@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <script>
+            let source;
+            function subscribeToEvents() {
+                source = new EventSource("/events");
+                source.addEventListener("open", function (e) {
+                    document.getElementById("content").innerHTML += "Connections to the server established..<br/>";
+                });
+                source.addEventListener("message", function (e) {
+                    document.getElementById("content").innerHTML += e.data + "<br/>";
+                });
+            }
+            subscribeToEvents();
+
+            window.addEventListener("load", function () {
+                document.getElementById("stopButton").onclick = function () {
+                    document.getElementById("content").innerHTML += "Listening to server events stopped..<br/>";
+                    source.close();
+                };
+
+                document.getElementById("startButton").onclick = function () {
+                    document.getElementById("content").innerHTML += "Listening to server events started..<br/>";
+                    subscribeToEvents();
+                };
+            });
+        </script>
+    </head>
+    <body>
+        <input type="button" id="stopButton" value="Stop Listening" />
+        <input type="button" id="startButton" value="Start Listening" />
+        <hr />
+        <div id="content"></div>
+    </body>
+</html>

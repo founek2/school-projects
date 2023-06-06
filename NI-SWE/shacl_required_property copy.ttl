@@ -1,0 +1,27 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ex: <http://example.org/> .
+
+ex:BobShape a sh:NodeShape ;
+  sh:targetClass foaf:Person ;
+  sh:property
+    [
+      sh:path foaf:givenName ;
+      sh:name "Person has givenName"@en ;
+	    sh:datatype rdf:langString ;
+      sh:minCount 1 ;
+    ] , [
+      sh:path foaf:familyName ;
+      sh:name "Person has familyName"@en ;
+      sh:datatype rdf:langString ;
+      sh:minCount 1 ;
+    ] , [
+      sh:path foaf:schoolHomepage ;
+      sh:name "Person has schoolHomepage"@en ;
+      sh:nodeKind sh:IRI ;
+      sh:class foaf:Document ;
+      sh:minCount 1 ;
+    ] ;
+.

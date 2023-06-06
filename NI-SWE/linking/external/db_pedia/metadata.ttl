@@ -1,0 +1,19 @@
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix : <#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:DBpedia a void:Dataset .
+:Cities a void:Dataset .
+
+:Cities_DBpedia a void:Linkset;
+    void:objectsTarget :DBpedia;
+    void:subjectsTarget :Cities;
+    void:linkPredicate owl:sameAs
+    .
+
+<> a void:DatasetDescription;
+    dcterms:title "Propojení stejných zemí"@cs;
+    dcterms:description "Linkování na základě porovnání názvu země"@cs;
+    dcterms:creator <https://martin.skalicky.cz/#me>;
+    .

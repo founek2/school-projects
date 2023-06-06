@@ -1,0 +1,11 @@
+# Find out which cities share name and how many times
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+
+SELECT ?name (count(?name) as ?nameOccoriences)
+WHERE {
+  GRAPH 	<http://192.168.10.219:9040/ni-swe2/data/cities> {
+    ?subject a dbo:City .
+  	?subject dbp:name ?name 
+  }
+} GROUP BY ?name HAVING (count(?name) > 1)

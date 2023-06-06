@@ -1,0 +1,66 @@
+<html lang="en">
+    <head></head>
+    <body
+        prefix="my: http://localhost/vocabulary/terms/ dc: http://purl.org/dc/terms/ xsd: http://www.w3.org/2001/XMLSchema# geo: http://www.w3.org/2003/01/geo/wgs84_pos# dbo: http://dbpedia.org/ontology/ dbp: http://dbpedia.org/property/ rdfs:http://www.w3.org/2000/01/rdf-schema#"
+    >
+        <h1>Flight records</h1>
+        <ul>
+            <li about="http://flightrecords.dev/resource/flightrecord/HBAL102" typeof="my:FlightRecord">
+                1
+                <ul>
+                    <li>callsign <span property="my:callsign" datatype="xsd:string">HBAL102</span></li>
+                    <li>icao24 <span property="my:icao24" datatype="xsd:string">a21c0f</span></li>
+
+                    <li rel="my:wasSpottedAt">
+                        was spotted at:<span about="http://flightrecords.dev/resource/location/1" typeof="geo:Point">
+                            <span property="geo:lat" datatype="xsd:decimal">-4.821135957362288</span>
+                            <span property="geo:long" datatype="xsd:decimal">-76.31936961206897</span> (lat, long)
+                            <br />
+                            altitude: <span property="geo:alt" datatype="xsd:decimal">18288.0</span>
+                            <span
+                                property="geo:long"
+                                content="POINT(-4.821135957362288 -76.31936961206897)"
+                                datatype="http://www.openlinksw.com/schemas/virtrdf#Geometry"
+                            ></span>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li about="http://flightrecords.dev/resource/flightrecord/AUA1028" typeof="my:FlightRecord">
+                1
+                <ul>
+                    <li>callsign <span property="my:callsign" datatype="xsd:string">AUA1028</span></li>
+                    <li>icao24 <span property="my:icao24" datatype="xsd:string">440081</span></li>
+                    <li>registration <span property="my:registration" datatype="xsd:string">OE-LPD</span></li>
+                    <li rel="my:origin">
+                        destination
+                        <span about="http://flightrecords.dev/resource/airport/YSSY" typeof="dbo:Airport">
+                            >airport -
+                            <span property="dbo:icaoLocationIdentifier" datatype="xsd:string">YSSY</span></span
+                        >
+                    </li>
+                    <li rel="my:destination">
+                        destination
+                        <span about="http://flightrecords.dev/resource/airport/LOWW" typeof="dbo:Airport">
+                            >airport -
+                            <span property="dbo:icaoLocationIdentifier" datatype="xsd:string">LOWW</span></span
+                        >
+                    </li>
+                    <li rel="my:wasSpottedAt">
+                        was spotted at:<span about="http://flightrecords.dev/resource/location/2" typeof="geo:Point">
+                            <span property="geo:lat" datatype="xsd:decimal">-33.96348856263245</span>
+                            <span property="geo:long" datatype="xsd:decimal">151.18062973022458</span> (lat, long)
+                            <br />
+                            altitude: <span property="geo:alt" datatype="xsd:decimal">0.2</span>
+                            <span
+                                property="geo:long"
+                                content="POINT(-33.96348856263245 151.18062973022458)"
+                                datatype="http://www.openlinksw.com/schemas/virtrdf#Geometry"
+                            ></span>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </body>
+</html>

@@ -1,0 +1,4 @@
+Sekvence:
+Operace:
+2865: 128
+Nespravny vstup.

@@ -1,0 +1,45 @@
+@prefix my:  <http://localhost/vocabulary/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <http://schema.org/> .
+@prefix ex: <http://example.org/> .
+@prefix geo:  <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dbo:  <http://dbpedia.org/ontology/> .
+@prefix dbp:  <http://dbpedia.org/property/> .
+
+ex:CountryShape
+    a sh:NodeShape ;
+    sh:property [
+        sh:path dbp:name ;
+        sh:name "Name"@en ;
+        sh:message "name must be in english"@en ;
+        sh:languageIn ( "en" ) ;
+    ] ;
+   	sh:or ([
+                sh:path dbo:iso31661Code ;
+                sh:name "ISO code"@en ;
+                sh:message "Must contain two ISO codes"@en ;
+                sh:minCount 2;
+                        
+            ]
+           [
+                sh:path dbo:iso31661Code ;
+                sh:name "Must not contain any ISO code"@en ;
+                sh:maxCount 0;
+                        
+            ]
+          
+         ) .
+
+ex:CityShape
+    a sh:NodeShape ;
+    sh:targetClass dbo:City ;
+    sh:property ex:CityIsoShape, [
+        sh:path dbp:country ;
+        sh:name "Country"@en ;
+        sh:message "must have country"@en ;
+        sh:minCount 1 ;
+        sh:node ex:CountryShape ;
+    ] .

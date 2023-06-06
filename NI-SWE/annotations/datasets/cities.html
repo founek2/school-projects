@@ -1,0 +1,49 @@
+<html lang="en">
+    <head></head>
+    <body
+        prefix="my: http://localhost/vocabulary/terms/ dc: http://purl.org/dc/terms/ xsd: http://www.w3.org/2001/XMLSchema# geo: http://www.w3.org/2003/01/geo/wgs84_pos# dbo: http://dbpedia.org/ontology/ dbp: http://dbpedia.org/property/ rdfs: http://www.w3.org/2000/01/rdf-schema#"
+    >
+        <div typeof="my:City geo:Point" about="http://airports.dev/resource/city/1392685764">
+            <h2 property="dbp:name rdfs:title">Tokyo</h2>
+            <label>population: </label><span property="dbp:pop" datatype="xsd:unsignedLong">39105000</span><br />
+
+            <div rel="dbp:country">
+                <div about="http://airports.dev/resource/country/japan">
+                    <label>country: </label><span property="dbp:name rdfs:title">Japan</span> - <label>iso2: </label
+                    ><span property="dbo:iso31661Code" datatype="xsd:string">JP</span> <label>iso3: </label
+                    ><span property="dbo:iso31661Code" datatype="xsd:string">JPN</span>
+                </div>
+            </div>
+            <div>
+                Location: <span property="geo:lat" datatype="xsd:decimal">35.6839</span>,
+                <span property="gep:long" datatype="xsd:decimal">139.7744</span> (lat, lng)
+                <span
+                    property="geo:long"
+                    content="POINT(35.6839 139.7744)"
+                    datatype="http://www.openlinksw.com/schemas/virtrdf#Geometry"
+                ></span>
+            </div>
+        </div>
+        <div typeof="my:City geo:Point" about="http://airports.dev/resource/city/1360771077">
+            <h2 property="dbp:name rdfs:title">Jakarta</h2>
+            <label>population: </label><span property="dbp:pop" datatype="xsd:unsignedLong">35362000</span><br />
+
+            <div rel="dbp:country">
+                <div about="http://airports.dev/resource/country/indonesia">
+                    <label>country: </label><span property="dbp:name rdfs:title">Indonesia</span> - <label>iso2: </label
+                    ><span property="dbo:iso31661Code" datatype="xsd:string">ID</span> <label>iso3: </label
+                    ><span property="dbo:iso31661Code" datatype="xsd:string">IDN</span>
+                </div>
+            </div>
+            <div>
+                Location: <span property="geo:lat" datatype="xsd:decimal">-6.2146</span>,
+                <span property="gep:long" datatype="xsd:decimal">106.8451</span> (lat, lng)
+                <span
+                    property="geo:long"
+                    content="POINT(-6.2146 106.8451)"
+                    datatype="http://www.openlinksw.com/schemas/virtrdf#Geometry"
+                ></span>
+            </div>
+        </div>
+    </body>
+</html>

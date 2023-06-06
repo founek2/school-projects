@@ -1,0 +1,19 @@
+# Find out if one of the 5 Iceland's airports serve to city "Keflavik"
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+prefix airport:  <http://airports.dev/resource/airport/>
+
+ASK {
+  GRAPH <http://192.168.10.219:9040/ni-swe2/data/airports> {
+    VALUES ?country {
+        <airport:BIAR>
+        <airport:BIEG>
+        <airport:BIHN>
+        <airport:BIHU>
+        <airport:BIIS>
+    }
+    ?airport a dbo:Airport .
+    ?airport dbo:city ?city .
+    ?city dbp:name "Keflavik"@en 
+  }
+}

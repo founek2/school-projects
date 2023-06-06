@@ -1,0 +1,11 @@
+{
+  "name": "03",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "author": "Martin Skalický",
+  "dependencies": {
+    "koa": "^2.13.4",
+    "koa-router": "^10.1.1"
+  }
+}

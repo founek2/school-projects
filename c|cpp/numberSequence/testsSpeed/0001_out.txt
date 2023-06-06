@@ -1,0 +1,6 @@
+Zadejte intervaly:
+Cifer: 1220808111
+Cifer: 1856204677
+Cifer: 1158489970
+Cifer: 1407269584
+

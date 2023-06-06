@@ -1,0 +1,178 @@
+from common import *
+import asyncio
+import time
+
+class DataStore:
+    def __init__(self, path: str):
+        with open(path, "rb") as f:
+            self.data = f.read()
+
+        self.ptr = 0
+        self.data_len = len(self.data)
+
+
+# TODO - stahnout firmware ze serveru a zkusit ho poslat -> objeví se problém s přetečením atd...
+class UploadFirmwareClient(asyncio.BaseProtocol):
+    def __init__(self, on_con_lost, firmware_path: str):
+        self.on_con_lost = on_con_lost
+        self.in_sync = True
+        self.transport = None
+        self.store = DataStore(firmware_path)
+        self.same_ack_counter = (0, 0)  # ack_number, count
+        self.last_ack = 0
+        self.last_move_t: int = 0
+        self.end = False
+
+    def connection_made(self, transport):
+        print("connected")
+        self.transport = transport
+        self.send_sync()
+
+    def datagram_received(self, data: bytes,
+                          addr):
+        packet = Packet.from_bytes(data)
+        id, seq, ack, meta, data = packet.attributes()
+
+        print(f"id={id} seq={seq} ack={ack} meta={bin(meta)} data={bin(int.from_bytes(data, 'big'))}")
+
+        if not self.in_sync and self.id != id:
+            return
+
+        if not is_valid_meta(meta) or not is_valid_id(id) or (is_FIN(meta) and len(data) > 0):
+            print("invalid")
+            return self.reset()
+
+        # checking - invalid seq, FIN but contains DATA -> RST
+        if is_RST(meta):
+            print("DEBUG>")
+            print(f"ptr={self.store.ptr} len={len(self.store.data)}")
+            print("Received RST -> closing")
+            self.transport.close()
+            return
+
+        if self.in_sync is True:
+            if is_SYN(meta):
+                if not is_valid_cmd(data):
+                    return self.reset()
+                if not is_cmd_up(data):
+                    return
+
+                print("Received SYN")
+                self.id = id
+                self.in_sync = False
+                self.send_window()
+
+                asyncio.get_running_loop().create_task(self.timeout_move())
+            return
+
+        if is_FIN(meta):
+            print("Received FIN -> closing")
+            self.transport.close()
+            return
+        num, count = self.same_ack_counter
+        if num == ack:
+            self.same_ack_counter = num, count + 1
+
+            if count + 1 >= 3:
+                self.last_move_t = time.time()
+                print("3x same ack -> sending one")
+                return self.send_one()
+        else:
+            self.same_ack_counter = ack, 1
+
+        if self.end and self.store.data_len % 65536 == ack:
+            self.last_ack = ack
+            print("last>", self.last_ack, ack, self.store.data_len % 65536)
+            asyncio.get_running_loop().create_task(self.repeat_send(Packet(id, ack, 0, FIN, bytes())))
+            return
+
+        if self.last_ack < ack:
+            diff = ack - self.last_ack
+            self.last_ack = ack
+            self.move_window(diff)
+        elif self.last_ack > ack and self.last_ack + WINDOW_WIDTH > ack:    # -> ack overflow
+            last = 0
+            while self.last_ack + last <= 65535:
+                last += 255
+
+            diff = last + ack - (self.last_ack + last) % 65536
+            print(f"ack overflow last={self.last_ack} ack={ack} diff={diff} over={(self.last_ack + last) % 65536}")
+            self.last_ack = ack
+            self.move_window(diff)
+
+    async def timeout_sync(self):
+        await asyncio.sleep(SYN_TIMEOUT)
+        if self.in_sync is True:
+            self.send_sync()
+
+    async def timeout_move(self):
+        print("timouting")
+        await asyncio.sleep(SYN_TIMEOUT)
+        if time.time() - self.last_move_t > SYN_TIMEOUT:
+            print("move TIMEOUT")
+            self.send_window()
+
+        if self.last_ack != self.store.data_len % 65536:
+            asyncio.get_running_loop().create_task(self.timeout_move())
+
+    async def repeat_send(self, data: Packet):
+        while True:
+            self.send(data)
+            await asyncio.sleep(SYN_TIMEOUT)
+
+    def send_window(self):
+        ptr = self.store.ptr
+        data = self.store.data
+        seq = ptr % 65536
+        for i in range(0, WINDOW_WIDTH, 255):
+            chunk = data[ptr + i:ptr + i + 255]
+            if len(chunk) == 0:
+                self.end = True
+                break
+            self.send(Packet(self.id, seq, 0, 0, chunk))
+            seq = (seq + 255) % 65536
+
+    def move_window(self, num):
+        print(f"Moving by {num}")
+        self.store.ptr += num
+        ptr = self.store.ptr
+        data = self.store.data
+        seq = (ptr + WINDOW_WIDTH) % 65536
+
+        self.last_move_t = time.time()
+
+        if ptr + WINDOW_WIDTH >= self.store.data_len:
+            self.end = True
+            return
+
+        i = 0
+        while i < num:
+            self.send(
+                Packet(self.id, (seq + i) % 65536, 0, 0, data[ptr + WINDOW_WIDTH + i:ptr + WINDOW_WIDTH + i + 255])
+            )
+            i += 255
+
+    def send_one(self):
+        ptr = self.store.ptr
+        self.send(Packet(self.id, ptr % 65536, 0, 0, self.store.data[ptr:255]))
+
+    def send_sync(self):
+        print("sending SYNC")
+        self.send(Packet(0, 0, 0, SYN, CMD_UPLOAD_FIRMWARE))
+        asyncio.get_running_loop().create_task(self.timeout_sync())
+
+    def connection_lost(self, exc):
+        print('The server closed the connection')
+        self.on_con_lost.set_result(True)
+
+    def reset(self):
+        self.send(Packet(0, 0, 0, RST, bytes()))
+        print("Calling RST -> closing")
+        self.transport.close()
+
+    def error_received(self, exc):
+        print('Error received:', exc)
+
+    def send(self, packet: Packet):
+        print("sending", packet)
+        self.transport.sendto(packet.to_bytes())

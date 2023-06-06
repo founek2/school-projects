@@ -1,0 +1,7 @@
+Mozna umisteni:
+Pocet billboardu:
+Vzdalenost: inf
+N/A
+Vzdalenost: 50
+Vzdalenost: 500
+Vzdalenost: 200

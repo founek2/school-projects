@@ -1,0 +1,26 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ns1: <https://data.gov.cz/slovník/podmínky-užití/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities> a dcat:Dataset ;
+    dcterms:title "Seznam velkých měst po celém světě"@cs ;
+    dcterms:description "Tento číselník obsahuje velká mě po celém světě. Každé město obsahuje mimo jiné celosvětový CAO identifikátor a vazbu na zemi ve které se nachází."@cs ;
+    dcat:keyword "město"@cs, "číselník"@cs;
+    dcat:theme <http://publications.europa.eu/resource/authority/data-theme/TRAN> ; #?
+    dcterms:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/IRREG> ;
+    # dcterms:conformsTo <https://ofn.gov.cz/číselníky/> ;
+    dcterms:publisher <https://martin.skalicky.cz/#me> ;
+    # dcterms:spatial <https://linked.cuzk.cz/resource/ruian/stat/1> ;
+    dcat:contactPoint [ a vcard:Organization ;
+            vcard:fn "Kontakt pro otevřená data"@cs ;
+            vcard:hasEmail <mailto:skalima7@fit.cvut.cz> ] ;
+    dcat:distribution <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/1>,
+        <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/2>,
+
+    # foaf:page <https://data.mvcr.gov.cz/soubory/číselníky/dny-v-týdnu.html> .

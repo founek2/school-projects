@@ -1,0 +1,8 @@
+Mozna umisteni:
+Pocet billboardu:
+Vzdalenost: inf
+Vzdalenost: 156
+Vzdalenost: 211
+Vzdalenost: 78
+Vzdalenost: 762
+Vzdalenost: 322

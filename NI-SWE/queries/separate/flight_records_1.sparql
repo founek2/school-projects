@@ -1,0 +1,28 @@
+# Construct record with human readable values -> 
+#       altitude transform to km and add unit, convert registration to number as registered or notRegistered, origin|destination if provided or not
+prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+prefix my: <http://localhost/vocabulary/terms/> 
+prefix resource: <http://localhost/resources/> 
+
+CONSTRUCT { ?iri a resource:FlightRecord;
+    			my:registrationStatus ?registrationText ;
+    			my:altitudeWithUnit ?altitudeUnit ;
+          my:destinationStatus ?destinationText ;
+          my:originStatus ?originText .
+}
+WHERE {
+  GRAPH <http://192.168.10.219:9040/ni-swe2/data/flight_records> {
+  	?iri a my:FlightRecord .
+    OPTIONAL {
+    	?iri my:registration ?registration .
+      ?iri my:wasSpottedAt ?location .
+      ?location geo:alt ?altitude .
+      ?iri my:destination ?destination .
+      ?iri my:origin ?origin .
+    }
+  }
+  BIND(STRLANG(if(bound(?registration),"registered", "notRegistered"), "en") as ?registrationText ) 
+  BIND(STRLANG(if(bound(?destination),"provided", "notProvided"), "en") as ?destinationText ) 
+  BIND(STRLANG(if(bound(?origin),"provided", "notProvided"), "en") as ?originText ) 
+  BIND(STRLANG(CONCAT(str((?altitude / 1000)), " km"), "en") as ?altitudeUnit)
+}

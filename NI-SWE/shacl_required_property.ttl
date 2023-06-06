@@ -1,0 +1,93 @@
+@prefix my:  <http://localhost/vocabulary/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix schema: <http://schema.org/> .
+@prefix ex: <http://example.org/> .
+@prefix geo:  <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+ex:FlightRecordSubjectsOfWasSpottedAt
+  a sh:NodeShape ;
+  sh:targetObjectsOf my:wasSpottedAt ;
+	sh:property
+    [
+      sh:path geo:lat ;
+      sh:name "Latitude"@en ;
+	    sh:datatype xsd:decimal ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:message "Must has exactly one latitude"@en ;
+      sh:severity sh:Violation ;
+
+    ], [
+      sh:path geo:long ;
+      sh:name "Longitude"@en ;
+	    sh:datatype xsd:decimal ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:message "Must has exactly one longitude"@en ;
+      sh:severity sh:Violation ;
+    ], [
+      sh:path geo:alt ;
+      sh:name "Altitude"@en ;
+	    sh:datatype xsd:decimal ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:message "Should have one altitude"@en ;
+      sh:severity sh:Warning ;
+    ] ;
+.
+
+
+ex:GeoPointShape
+    a sh:NodeShape ;
+    sh:targetClass geo:Point ;
+    sh:property
+      [
+        sh:path geo:lat ;
+        sh:name "Latitude"@en ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive -90 ;
+        sh:maxInclusive 90 ;
+        sh:message "Lat allowed range <-90,90>"@en ;
+        sh:severity sh:Violation ;
+
+      ], [
+        sh:path geo:long ;
+        sh:name "Longitude"@en ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive -180 ;
+        sh:maxInclusive 180 ;
+        sh:message "Long allowed range <-180,180>"@en ;
+        sh:severity sh:Violation ;
+      ] ;
+    .
+  
+ex:FlightRecordShape
+    a sh:NodeShape ;
+    sh:targetClass my:FlightRecord ;
+    sh:property 
+        ex:FlightRecordShape-callsign ,
+      [
+        sh:path my:registration ;
+        sh:name "Registration number"@en ;
+        sh:message "registration cannot be empty"@en ;
+        sh:minLength 1 ;
+      ] ;
+   .
+
+ex:FlightRecordShape-callsign
+  a sh:PropertyShape ;
+  sh:path my:callsign ;
+	sh:name "Call sign"@en ;
+	sh:message "Invalid callsign format"@en ;
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:datatype xsd:string ;
+  sh:pattern "^[A-Z0-9]{3,8}$" ;
+	sh:severity sh:Violation .
+
+
+
+

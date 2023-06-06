@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">DebtDiary</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="DebtDiary.html#runCli"><span class="hs-identifier">runCli</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lib.Formatting.html"><span class="hs-identifier">Lib.Formatting</span></a></span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Formatting</span></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lib.Logics.html"><span class="hs-identifier">Lib.Logics</span></a></span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Logics</span></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lib.Operations.html"><span class="hs-identifier">Lib.Operations</span></a></span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Operations</span></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.Console.CmdArgs</span></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.Console.CmdArgs.Explicit</span></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span id="local-6989586621679087983"><span id="local-6989586621679087984"><span id="local-6989586621679087985"><span id="local-6989586621679087986"><span class="annot"><a href="DebtDiary.html#flip3"><span class="hs-identifier hs-type">flip3</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679087986"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087985"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087984"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087983"><span class="hs-identifier hs-type">d</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087984"><span class="hs-identifier hs-type">c</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087985"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087986"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087983"><span class="hs-identifier hs-type">d</span></a></span></span></span></span></span><span>
+</span><span id="line-10"></span><span id="flip3"><span class="annot"><span class="annottext">flip3 :: forall a b c d. (a -&gt; b -&gt; c -&gt; d) -&gt; c -&gt; b -&gt; a -&gt; d
+</span><a href="DebtDiary.html#flip3"><span class="hs-identifier hs-var hs-var">flip3</span></a></span></span><span> </span><span id="local-6989586621679087895"><span class="annot"><span class="annottext">a -&gt; b -&gt; c -&gt; d
+</span><a href="#local-6989586621679087895"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679087894"><span class="annot"><span class="annottext">c
+</span><a href="#local-6989586621679087894"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span id="local-6989586621679087893"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679087893"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span id="local-6989586621679087892"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087892"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; b -&gt; c -&gt; d
+</span><a href="#local-6989586621679087895"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087892"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679087893"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">c
+</span><a href="#local-6989586621679087894"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-11"></span><span>
+</span><span id="line-12"></span><span class="annot"><a href="DebtDiary.html#arguments"><span class="hs-identifier hs-type">arguments</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Mode</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-13"></span><span id="arguments"><span class="annot"><span class="annottext">arguments :: Mode [(String, String)]
+</span><a href="DebtDiary.html#arguments"><span class="hs-identifier hs-var hs-var">arguments</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-14"></span><span>  </span><span class="annot"><span class="annottext">forall a. String -&gt; a -&gt; String -&gt; Arg a -&gt; [Flag a] -&gt; Mode a
+</span><span class="hs-identifier hs-var">mode</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;debt-diary&quot;</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-17"></span><span>    </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Debt Diary program&quot;</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a. Update a -&gt; String -&gt; Arg a
+</span><span class="hs-identifier hs-var">flagArg</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall {a} {b} {a}. a -&gt; b -&gt; [(a, b)] -&gt; Either a [(a, b)]
+</span><a href="#local-6989586621679087888"><span class="hs-identifier hs-var">upd</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;list|item|overview|balance|create|add|edit|delete&quot;</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">forall a. [String] -&gt; Update a -&gt; String -&gt; String -&gt; Flag a
+</span><span class="hs-identifier hs-var">flagReq</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;f&quot;</span></span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall {a} {b} {a}. a -&gt; b -&gt; [(a, b)] -&gt; Either a [(a, b)]
+</span><a href="#local-6989586621679087888"><span class="hs-identifier hs-var">upd</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;path_to_file.json&quot;</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Debt diary file&quot;</span></span><span class="hs-special">,</span><span>
+</span><span id="line-20"></span><span>      </span><span class="annot"><span class="annottext">forall a. (a -&gt; a) -&gt; Flag a
+</span><span class="hs-identifier hs-var">flagHelpSimple</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;help&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">]</span><span>
+</span><span id="line-22"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-23"></span><span>    </span><span id="local-6989586621679087888"><span class="annot"><span class="annottext">upd :: a -&gt; b -&gt; [(a, b)] -&gt; Either a [(a, b)]
+</span><a href="#local-6989586621679087888"><span class="hs-identifier hs-var hs-var">upd</span></a></span></span><span> </span><span id="local-6989586621679087885"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087885"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span id="local-6989586621679087884"><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679087884"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span id="local-6989586621679087883"><span class="annot"><span class="annottext">[(a, b)]
+</span><a href="#local-6989586621679087883"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087885"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679087884"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[(a, b)]
+</span><a href="#local-6989586621679087883"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span id="local-6989586621679087961"><span class="annot"><a href="DebtDiary.html#putStrRight"><span class="hs-identifier hs-type">putStrRight</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><a href="#local-6989586621679087961"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span></span><span>
+</span><span id="line-26"></span><span id="putStrRight"><span class="annot"><span class="annottext">putStrRight :: forall a. String -&gt; IO (Either a ())
+</span><a href="DebtDiary.html#putStrRight"><span class="hs-identifier hs-var hs-var">putStrRight</span></a></span></span><span> </span><span id="local-6989586621679087880"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087880"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; IO ()
+</span><span class="hs-identifier hs-var">putStrLn</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087880"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-27"></span><span>
+</span><span id="line-28"></span><span class="hs-comment">-- | The 'runCli' function parses cli arguments and runs appropriate actions.</span><span>
+</span><span id="line-29"></span><span class="annot"><a href="DebtDiary.html#runCli"><span class="hs-identifier hs-type">runCli</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span id="runCli"><span class="annot"><span class="annottext">runCli :: IO ()
+</span><a href="DebtDiary.html#runCli"><span class="hs-identifier hs-var hs-var">runCli</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-31"></span><span>  </span><span id="local-6989586621679087877"><span class="annot"><span class="annottext">[(String, String)]
+</span><a href="#local-6989586621679087877"><span class="hs-identifier hs-var">xs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">reverse</span></span><span> </span><span class="annot"><span class="annottext">forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Mode a -&gt; IO a
+</span><span class="hs-identifier hs-var">processArgs</span></span><span> </span><span class="annot"><span class="annottext">Mode [(String, String)]
+</span><a href="DebtDiary.html#arguments"><span class="hs-identifier hs-var">arguments</span></a></span><span>
+</span><span id="line-32"></span><span>  </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[(String, String)]
+</span><a href="#local-6989586621679087877"><span class="hs-identifier hs-var">xs</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087874"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087874"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;list&quot;</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-34"></span><span>      </span><span id="local-6989586621679087873"><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087873"><span class="hs-identifier hs-var">diaryOpt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO (Either Error Diary)
+</span><a href="Lib.Operations.html#parseDiary"><span class="hs-identifier hs-var">Operations.parseDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087874"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span>      </span><span class="annot"><span class="annottext">forall a b c.
+Show a =&gt;
+(b -&gt; IO (Either Error c)) -&gt; Either a b -&gt; IO ()
+</span><a href="Lib.Operations.html#apply2"><span class="hs-identifier hs-var">Operations.apply2</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a. String -&gt; IO (Either a ())
+</span><a href="DebtDiary.html#putStrRight"><span class="hs-identifier hs-var">putStrRight</span></a></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettify"><span class="hs-identifier hs-var">Formatting.prettify</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087873"><span class="hs-identifier hs-var">diaryOpt</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087868"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087868"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;overview&quot;</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-38"></span><span>      </span><span id="local-6989586621679087867"><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087867"><span class="hs-identifier hs-var">diaryOpt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO (Either Error Diary)
+</span><a href="Lib.Operations.html#parseDiary"><span class="hs-identifier hs-var">Operations.parseDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087868"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span>      </span><span class="annot"><span class="annottext">forall a b c.
+Show a =&gt;
+(b -&gt; IO (Either Error c)) -&gt; Either a b -&gt; IO ()
+</span><a href="Lib.Operations.html#apply2"><span class="hs-identifier hs-var">Operations.apply2</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a. String -&gt; IO (Either a ())
+</span><a href="DebtDiary.html#putStrRight"><span class="hs-identifier hs-var">putStrRight</span></a></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettifyTable"><span class="hs-identifier hs-var">Formatting.prettifyTable</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087867"><span class="hs-identifier hs-var">diaryOpt</span></a></span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087865"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087865"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;balance&quot;</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-42"></span><span>      </span><span id="local-6989586621679087864"><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087864"><span class="hs-identifier hs-var">diaryOpt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO (Either Error Diary)
+</span><a href="Lib.Operations.html#parseDiary"><span class="hs-identifier hs-var">Operations.parseDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087865"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span>      </span><span class="annot"><span class="annottext">forall a b c.
+Show a =&gt;
+(b -&gt; IO (Either Error c)) -&gt; Either a b -&gt; IO ()
+</span><a href="Lib.Operations.html#apply2"><span class="hs-identifier hs-var">Operations.apply2</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a. String -&gt; IO (Either a ())
+</span><a href="DebtDiary.html#putStrRight"><span class="hs-identifier hs-var">putStrRight</span></a></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettifyBalance"><span class="hs-identifier hs-var">Formatting.prettifyBalance</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087864"><span class="hs-identifier hs-var">diaryOpt</span></a></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087862"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087862"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;create&quot;</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-46"></span><span>      </span><span id="local-6989586621679087861"><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087861"><span class="hs-identifier hs-var">diary</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO Diary
+</span><a href="Lib.Operations.html#promptDiary"><span class="hs-identifier hs-var">Operations.promptDiary</span></a></span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span>      </span><span class="annot"><span class="annottext">forall a b. (a -&gt; IO (Either Error b)) -&gt; a -&gt; IO ()
+</span><a href="Lib.Operations.html#apply"><span class="hs-identifier hs-var">Operations.apply</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Diary -&gt; IO (Either Error ())
+</span><a href="Lib.Operations.html#saveDiary"><span class="hs-identifier hs-var">Operations.saveDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087862"><span class="hs-identifier hs-var">file</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087861"><span class="hs-identifier hs-var">diary</span></a></span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087857"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087857"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;add&quot;</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-50"></span><span>      </span><span id="local-6989586621679087856"><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087856"><span class="hs-identifier hs-var">diaryOpt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO (Either Error Diary)
+</span><a href="Lib.Operations.html#parseDiary"><span class="hs-identifier hs-var">Operations.parseDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087857"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span>      </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087856"><span class="hs-identifier hs-var">diaryOpt</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-53"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087855"><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087855"><span class="hs-identifier hs-var">diary</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-54"></span><span>          </span><span id="local-6989586621679087854"><span class="annot"><span class="annottext">Debt
+</span><a href="#local-6989586621679087854"><span class="hs-identifier hs-var">newRecord</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO Debt
+</span><a href="Lib.Operations.html#promptDebtRecord"><span class="hs-identifier hs-var">Operations.promptDebtRecord</span></a></span><span>
+</span><span id="line-55"></span><span>          </span><span class="annot"><span class="annottext">forall a b. (a -&gt; IO (Either Error b)) -&gt; a -&gt; IO ()
+</span><a href="Lib.Operations.html#apply"><span class="hs-identifier hs-var">Operations.apply</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Diary -&gt; IO (Either Error ())
+</span><a href="Lib.Operations.html#saveDiary"><span class="hs-identifier hs-var">Operations.saveDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087857"><span class="hs-identifier hs-var">file</span></a></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Debt -&gt; Diary -&gt; Diary
+</span><a href="Lib.Logics.html#appendRecord"><span class="hs-identifier hs-var">Logics.appendRecord</span></a></span><span> </span><span class="annot"><span class="annottext">Debt
+</span><a href="#local-6989586621679087854"><span class="hs-identifier hs-var">newRecord</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087855"><span class="hs-identifier hs-var">diary</span></a></span><span>
+</span><span id="line-56"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087851"><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087851"><span class="hs-identifier hs-var">err</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall s. Show s =&gt; s -&gt; IO ()
+</span><a href="Lib.Operations.html#exitWithErrorMessage"><span class="hs-identifier hs-var">Operations.exitWithErrorMessage</span></a></span><span> </span><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087851"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087849"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087849"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;item&quot;</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087848"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087848"><span class="hs-identifier hs-var">index</span></a></span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-58"></span><span>      </span><span id="local-6989586621679087847"><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087847"><span class="hs-identifier hs-var">diaryOpt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO (Either Error Diary)
+</span><a href="Lib.Operations.html#parseDiary"><span class="hs-identifier hs-var">Operations.parseDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087849"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span>      </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087847"><span class="hs-identifier hs-var">diaryOpt</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-61"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087846"><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087846"><span class="hs-identifier hs-var">diary</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-62"></span><span>          </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679087845"><span class="annot"><span class="annottext">idx :: Either Error Int
+</span><a href="#local-6989586621679087845"><span class="hs-identifier hs-var hs-var">idx</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either Error Int
+</span><a href="Lib.Operations.html#loadIndex"><span class="hs-identifier hs-var">Operations.loadIndex</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087848"><span class="hs-identifier hs-var">index</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Diary -&gt; Int
+</span><a href="Lib.Logics.html#maxRecordIdx"><span class="hs-identifier hs-var">Logics.maxRecordIdx</span></a></span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087846"><span class="hs-identifier hs-var">diary</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-63"></span><span>          </span><span class="annot"><span class="annottext">forall a b c.
+Show a =&gt;
+(b -&gt; IO (Either Error c)) -&gt; Either a b -&gt; IO ()
+</span><a href="Lib.Operations.html#apply2"><span class="hs-identifier hs-var">Operations.apply2</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a. String -&gt; IO (Either a ())
+</span><a href="DebtDiary.html#putStrRight"><span class="hs-identifier hs-var">putStrRight</span></a></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettifyNth"><span class="hs-identifier hs-var">Formatting.prettifyNth</span></a></span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087846"><span class="hs-identifier hs-var">diary</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Either Error Int
+</span><a href="#local-6989586621679087845"><span class="hs-identifier hs-var">idx</span></a></span><span>
+</span><span id="line-64"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087840"><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087840"><span class="hs-identifier hs-var">err</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall s. Show s =&gt; s -&gt; IO ()
+</span><a href="Lib.Operations.html#exitWithErrorMessage"><span class="hs-identifier hs-var">Operations.exitWithErrorMessage</span></a></span><span> </span><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087840"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087839"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087839"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;edit&quot;</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087838"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087838"><span class="hs-identifier hs-var">index</span></a></span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-66"></span><span>      </span><span id="local-6989586621679087837"><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087837"><span class="hs-identifier hs-var">diaryOpt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO (Either Error Diary)
+</span><a href="Lib.Operations.html#parseDiary"><span class="hs-identifier hs-var">Operations.parseDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087839"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span>      </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087837"><span class="hs-identifier hs-var">diaryOpt</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-69"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087836"><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087836"><span class="hs-identifier hs-var">diary</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-70"></span><span>          </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679087835"><span class="annot"><span class="annottext">idxOpt :: Either Error Int
+</span><a href="#local-6989586621679087835"><span class="hs-identifier hs-var hs-var">idxOpt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either Error Int
+</span><a href="Lib.Operations.html#loadIndex"><span class="hs-identifier hs-var">Operations.loadIndex</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087838"><span class="hs-identifier hs-var">index</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Diary -&gt; Int
+</span><a href="Lib.Logics.html#maxRecordIdx"><span class="hs-identifier hs-var">Logics.maxRecordIdx</span></a></span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087836"><span class="hs-identifier hs-var">diary</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span>
+</span><span id="line-72"></span><span>          </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Either Error Int
+</span><a href="#local-6989586621679087835"><span class="hs-identifier hs-var">idxOpt</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-73"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087834"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087834"><span class="hs-identifier hs-var">idx</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-74"></span><span>              </span><span id="local-6989586621679087833"><span class="annot"><span class="annottext">Debt
+</span><a href="#local-6989586621679087833"><span class="hs-identifier hs-var">newRecord</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO Debt
+</span><a href="Lib.Operations.html#promptDebtRecord"><span class="hs-identifier hs-var">Operations.promptDebtRecord</span></a></span><span>
+</span><span id="line-75"></span><span>              </span><span class="annot"><span class="annottext">forall a b. (a -&gt; IO (Either Error b)) -&gt; a -&gt; IO ()
+</span><a href="Lib.Operations.html#apply"><span class="hs-identifier hs-var">Operations.apply</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Diary -&gt; IO (Either Error ())
+</span><a href="Lib.Operations.html#saveDiary"><span class="hs-identifier hs-var">Operations.saveDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087839"><span class="hs-identifier hs-var">file</span></a></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">forall a b c d. (a -&gt; b -&gt; c -&gt; d) -&gt; c -&gt; b -&gt; a -&gt; d
+</span><a href="DebtDiary.html#flip3"><span class="hs-identifier hs-var">flip3</span></a></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Debt -&gt; Diary -&gt; Diary
+</span><a href="Lib.Logics.html#updateRecord"><span class="hs-identifier hs-var">Logics.updateRecord</span></a></span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087836"><span class="hs-identifier hs-var">diary</span></a></span><span> </span><span class="annot"><span class="annottext">Debt
+</span><a href="#local-6989586621679087833"><span class="hs-identifier hs-var">newRecord</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087834"><span class="hs-identifier hs-var">idx</span></a></span><span>
+</span><span id="line-76"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087831"><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087831"><span class="hs-identifier hs-var">err</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall s. Show s =&gt; s -&gt; IO ()
+</span><a href="Lib.Operations.html#exitWithErrorMessage"><span class="hs-identifier hs-var">Operations.exitWithErrorMessage</span></a></span><span> </span><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087831"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-77"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087830"><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087830"><span class="hs-identifier hs-var">err</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall s. Show s =&gt; s -&gt; IO ()
+</span><a href="Lib.Operations.html#exitWithErrorMessage"><span class="hs-identifier hs-var">Operations.exitWithErrorMessage</span></a></span><span> </span><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087830"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-78"></span><span>    </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;file&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087829"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087829"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;action&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;delete&quot;</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087828"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087828"><span class="hs-identifier hs-var">index</span></a></span></span><span class="hs-special">)</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-79"></span><span>      </span><span id="local-6989586621679087827"><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087827"><span class="hs-identifier hs-var">diaryOpt</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; IO (Either Error Diary)
+</span><a href="Lib.Operations.html#parseDiary"><span class="hs-identifier hs-var">Operations.parseDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087829"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-80"></span><span>
+</span><span id="line-81"></span><span>      </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Either Error Diary
+</span><a href="#local-6989586621679087827"><span class="hs-identifier hs-var">diaryOpt</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-82"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087826"><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087826"><span class="hs-identifier hs-var">diary</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-83"></span><span>          </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679087825"><span class="annot"><span class="annottext">idx :: Either Error Int
+</span><a href="#local-6989586621679087825"><span class="hs-identifier hs-var hs-var">idx</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Int -&gt; Either Error Int
+</span><a href="Lib.Operations.html#loadIndex"><span class="hs-identifier hs-var">Operations.loadIndex</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087828"><span class="hs-identifier hs-var">index</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Diary -&gt; Int
+</span><a href="Lib.Logics.html#maxRecordIdx"><span class="hs-identifier hs-var">Logics.maxRecordIdx</span></a></span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087826"><span class="hs-identifier hs-var">diary</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span>          </span><span class="annot"><span class="annottext">forall a b c.
+Show a =&gt;
+(b -&gt; IO (Either Error c)) -&gt; Either a b -&gt; IO ()
+</span><a href="Lib.Operations.html#apply2"><span class="hs-identifier hs-var">Operations.apply2</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Diary -&gt; IO (Either Error ())
+</span><a href="Lib.Operations.html#saveDiary"><span class="hs-identifier hs-var">Operations.saveDiary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087829"><span class="hs-identifier hs-var">file</span></a></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; Diary -&gt; Diary
+</span><a href="Lib.Logics.html#deleteRecord"><span class="hs-identifier hs-var">Logics.deleteRecord</span></a></span><span> </span><span class="annot"><span class="annottext">Diary
+</span><a href="#local-6989586621679087826"><span class="hs-identifier hs-var">diary</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Either Error Int
+</span><a href="#local-6989586621679087825"><span class="hs-identifier hs-var">idx</span></a></span><span>
+</span><span id="line-86"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087823"><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087823"><span class="hs-identifier hs-var">err</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall s. Show s =&gt; s -&gt; IO ()
+</span><a href="Lib.Operations.html#exitWithErrorMessage"><span class="hs-identifier hs-var">Operations.exitWithErrorMessage</span></a></span><span> </span><span class="annot"><span class="annottext">Error
+</span><a href="#local-6989586621679087823"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-87"></span><span>    </span><span class="annot"><span class="annottext">[(String, String)]
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;help&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
+</span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="annot"><span class="annottext">[(String, String)]
+</span><a href="#local-6989586621679087877"><span class="hs-identifier hs-var">xs</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">forall s. Show s =&gt; s -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a. [String] -&gt; HelpFormat -&gt; Mode a -&gt; [Text]
+</span><span class="hs-identifier hs-var">helpText</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">HelpFormat
+</span><span class="hs-identifier hs-var">HelpFormatDefault</span></span><span> </span><span class="annot"><span class="annottext">Mode [(String, String)]
+</span><a href="DebtDiary.html#arguments"><span class="hs-identifier hs-var">arguments</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">forall s. Show s =&gt; s -&gt; IO ()
+</span><span class="hs-identifier hs-var">print</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a. [String] -&gt; HelpFormat -&gt; Mode a -&gt; [Text]
+</span><span class="hs-identifier hs-var">helpText</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Invalid arguments provided&quot;</span></span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">HelpFormat
+</span><span class="hs-identifier hs-var">HelpFormatDefault</span></span><span> </span><span class="annot"><span class="annottext">Mode [(String, String)]
+</span><a href="DebtDiary.html#arguments"><span class="hs-identifier hs-var">arguments</span></a></span><span>
+</span><span id="line-88"></span></pre></body></html>

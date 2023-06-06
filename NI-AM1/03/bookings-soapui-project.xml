@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="ba99e42a-3029-42f7-b30d-7974e3d8decf" activeEnvironment="Default" name="bookings" resourceRoot="" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="106ad363-dbd7-4a8a-9b31-a700b47e198e" wsaVersion="NONE" name="ToursPortSoap11" type="wsdl" bindingName="{https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/}ToursPortSoap11" soapVersion="1_1" anonymous="optional" definition="http://localhost:8183/ws/bookings.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8183/ws/bookings.wsdl"><con:part><con:url>http://localhost:8183/ws/bookings.wsdl</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="getBookingsRequest">
+        <xs:complexType>
+          <xs:sequence/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getBookingsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="booking" type="tns:booking"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="booking">
+        <xs:sequence>
+          <xs:element name="id" type="xs:unsignedInt"/>
+          <xs:element name="airportId" type="tns:airportIdentifier"/>
+          <xs:element name="passenger" type="tns:passenger"/>
+          <xs:element name="departureAt" type="xs:dateTime"/>
+          <xs:element name="arrivalAt" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="bookingCreate">
+        <xs:sequence>
+          <xs:element name="airportId" type="tns:airportIdentifier"/>
+          <xs:element name="passenger" type="tns:passenger"/>
+          <xs:element name="departureAt" type="xs:dateTime"/>
+          <xs:element name="arrivalAt" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="airportIdentifier">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ID_123"/>
+          <xs:enumeration value="ID_XXX"/>
+          <xs:enumeration value="ID_000"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:complexType name="passenger">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element name="surname" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="deleteBookingRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="id" type="xs:unsignedInt"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="deleteBookingResponse">
+        <xs:complexType>
+          <xs:sequence/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getBookingRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="id" type="xs:unsignedInt"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getBookingResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="booking" type="tns:booking"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="createBookingRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="booking" type="tns:bookingCreate"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="updateBookingRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="booking" type="tns:booking"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="updateBookingRequest">
+    <wsdl:part element="tns:updateBookingRequest" name="updateBookingRequest"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBookingsResponse">
+    <wsdl:part element="tns:getBookingsResponse" name="getBookingsResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBookingRequest">
+    <wsdl:part element="tns:getBookingRequest" name="getBookingRequest"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createBookingRequest">
+    <wsdl:part element="tns:createBookingRequest" name="createBookingRequest"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteBookingRequest">
+    <wsdl:part element="tns:deleteBookingRequest" name="deleteBookingRequest"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteBookingResponse">
+    <wsdl:part element="tns:deleteBookingResponse" name="deleteBookingResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBookingsRequest">
+    <wsdl:part element="tns:getBookingsRequest" name="getBookingsRequest"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBookingResponse">
+    <wsdl:part element="tns:getBookingResponse" name="getBookingResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ToursPort">
+    <wsdl:operation name="updateBooking">
+      <wsdl:input message="tns:updateBookingRequest" name="updateBookingRequest"></wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="getBookings">
+      <wsdl:input message="tns:getBookingsRequest" name="getBookingsRequest"></wsdl:input>
+      <wsdl:output message="tns:getBookingsResponse" name="getBookingsResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBooking">
+      <wsdl:input message="tns:getBookingRequest" name="getBookingRequest"></wsdl:input>
+      <wsdl:output message="tns:getBookingResponse" name="getBookingResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createBooking">
+      <wsdl:input message="tns:createBookingRequest" name="createBookingRequest"></wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="deleteBooking">
+      <wsdl:input message="tns:deleteBookingRequest" name="deleteBookingRequest"></wsdl:input>
+      <wsdl:output message="tns:deleteBookingResponse" name="deleteBookingResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ToursPortSoap11" type="tns:ToursPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="updateBooking">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="updateBookingRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="getBookings">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="getBookingsRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getBookingsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBooking">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="getBookingRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getBookingResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createBooking">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="createBookingRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="deleteBooking">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="deleteBookingRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="deleteBookingResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ToursPortService">
+    <wsdl:port binding="tns:ToursPortSoap11" name="ToursPortSoap11">
+      <soap:address location="http://localhost:8183/ws"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8183/ws</con:endpoint></con:endpoints><con:operation id="a69bbbc4-3d3f-424d-8ea1-6e1d2d4c4932" isOneWay="false" action="" name="createBooking" bindingOperationName="createBooking" type="One-Way" inputName="createBookingRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9cffeb59-7216-4b3f-b620-b4cccb9ae7d5" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:createBookingRequest>
+         <web:booking>
+
+         </web:booking>
+      </web:createBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/createBookingRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="6e207302-ed45-45eb-af4b-b7199b025341" isOneWay="false" action="" name="deleteBooking" bindingOperationName="deleteBooking" type="Request-Response" outputName="deleteBookingResponse" inputName="deleteBookingRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="bdd82735-7d26-4145-b40f-812dc2d928ae" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:deleteBookingRequest>
+         <web:id>?</web:id>
+      </web:deleteBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/deleteBookingRequest"/></con:call></con:operation><con:operation id="f32101f8-3a3f-4ab2-847a-eedfadda3789" isOneWay="false" action="" name="getBooking" bindingOperationName="getBooking" type="Request-Response" outputName="getBookingResponse" inputName="getBookingRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="3a68312f-0a72-477f-a9c8-59facf4a7e4e" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:getBookingRequest>
+         <web:id>?</web:id>
+      </web:getBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/getBookingRequest"/></con:call></con:operation><con:operation id="934bdd16-1053-43c8-a9d9-ac3f8a295848" isOneWay="false" action="" name="getBookings" bindingOperationName="getBookings" type="Request-Response" outputName="getBookingsResponse" inputName="getBookingsRequest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9571ea6e-01d7-4d5b-a196-b0061cb877dd" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:getBookingsRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/getBookingsRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="4e6f0e67-aa8c-4d8d-99dd-d8386f1da47c" isOneWay="false" action="" name="updateBooking" bindingOperationName="updateBooking" type="One-Way" inputName="updateBookingRequest" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="7e78466e-5e87-4e3a-9e9f-cb848de7081d" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:updateBookingRequest>
+         <web:booking>
+            <web:id>0</web:id>
+            <web:airportId>ID_XXX</web:airportId>
+            <web:passenger>
+               <web:name>Jan</web:name>
+               <web:surname>Holý</web:surname>
+            </web:passenger>
+            <web:departureAt>2021-10-07T11:32:17.344+02:00</web:departureAt>
+            <web:arrivalAt>2021-10-07T16:32:17.344+02:00</web:arrivalAt>
+         </web:booking>
+      </web:updateBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/updateBookingRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="f61eb3f6-83ea-4d02-b426-0c928abe2295" name="ToursPortSoap11 TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="f622cbf3-0cf3-456d-8486-8a70848df38e" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="createBooking TestCase" searchProperties="true"><con:settings/><con:testStep type="request" id="31b80b0f-b293-4379-b079-659868f42674" name="createBooking"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>createBooking</con:operation><con:request name="createBooking" id="8b9f2514-2403-4d3e-83bd-0fe2979525fc"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:createBookingRequest>
+         <web:booking>
+            <web:passenger>
+               <web:name>Martin</web:name>
+               <web:surname>Starý</web:surname>
+            </web:passenger>
+            <web:departure>
+            	<web:time>2021-10-07T16:32:17.344+02:00</web:time>
+            	<web:airportId>ID_000</web:airportId>
+            </web:departure>
+              <web:arrival>
+            	<web:time>2021-10-07T16:32:17.344+02:00</web:time>
+            	<web:airportId>ID_123</web:airportId>
+            </web:arrival>
+            <web:arrivalAt>2021-10-08T10:32:17.344+02:00</web:arrivalAt>
+         </web:booking>
+      </web:createBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="XPath Match" id="6d998953-f565-4d22-881a-377a43d1ab42" name="XPath name"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingResponse/ns2:booking/ns2:passenger/ns2:name</path><content>Martin</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" id="b38ff534-f911-49e2-9ee5-753c3fd4c31c" name="XPath ID existence"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingResponse/ns2:booking/ns2:id</path><content>*</content><allowWildcards>true</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" id="61790669-214c-4c89-8181-29590b918208" name="XPath arrival"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingResponse/ns2:booking/ns2:arrival/ns2:airportId</path><content>ID_123</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/createBookingRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="80e74593-9d38-44f6-b293-297207fff578" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="deleteBooking TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="createBooking" id="bae78191-86f4-45af-884d-dcfb4a881d43"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>createBooking</con:operation><con:request name="createBooking" id="86c929c7-3594-4ea1-8693-5cb2c341ae1c"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:createBookingRequest>
+         <web:booking>
+            <web:passenger>
+               <web:name>Martin</web:name>
+               <web:surname>Starý</web:surname>
+            </web:passenger>
+            <web:departureAt></web:departureAt>
+            <web:arrivalAt></web:arrivalAt>
+
+            <web:departure>
+            	<web:time>2021-10-07T16:32:17.344+02:00</web:time>
+            	<web:airportId>ID_000</web:airportId>
+            </web:departure>
+              <web:arrival>
+            	<web:time>2021-10-08T10:32:17.344+02:00</web:time>
+            	<web:airportId>ID_000</web:airportId>
+            </web:arrival>
+         </web:booking>
+      </web:createBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response" id="0e5bd2b4-cc3b-4081-bb10-a2609dd16230"/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="transfer" name="Property Transfer" id="a302e689-1da1-4ac0-9d89-8f86145c6eba"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>booking id</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>createBooking</con:sourceStep><con:sourcePath>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingResponse/ns2:booking/ns2:id/text()
+
+</con:sourcePath><con:targetType>Request</con:targetType><con:targetStep>deleteBooking</con:targetStep><con:targetPath>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace web='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//web:deleteBookingRequest/web:id/text()
+
+</con:targetPath><con:upgraded>true</con:upgraded></con:transfers><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>booking id get</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>createBooking</con:sourceStep><con:sourcePath>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingResponse/ns2:booking/ns2:id/text()
+
+</con:sourcePath><con:targetType>Request</con:targetType><con:targetStep>getBooking</con:targetStep><con:targetPath>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace web='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//web:getBookingRequest/web:id/text()
+
+</con:targetPath><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="request" id="cb81c966-65c3-47fb-b015-005965d49e88" name="deleteBooking"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>deleteBooking</con:operation><con:request name="deleteBooking" id="5d4b9729-2baa-416b-b991-5072465145c7"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:deleteBookingRequest>
+         <web:id>1</web:id>
+      </web:deleteBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/deleteBookingRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="getBooking" id="7c035065-c49d-43d8-90fd-671cfeae5d5d"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>createBooking</con:operation><con:request name="getBooking" id="dcaea477-95cd-4dba-970b-fed3600948e2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:getBookingRequest>
+         <web:id>1</web:id>
+      </web:getBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response" id="f19b80b2-577f-45f9-ad39-812c04977c01"/><con:assertion type="XPath Match" id="5e39b50a-7067-4ffa-9043-8c9fb3f521e4" name="XPath Match"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+matches(//ns2:getBookingsResponse, '')</path><content>true</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="6d725db7-58f1-44fa-96e9-03e62530a4ec" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="getBooking TestCase" searchProperties="true"><con:settings/><con:testStep type="request" id="b115ec91-88ca-4a6c-b973-41eaca0b51de" name="getBooking"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>getBooking</con:operation><con:request name="getBooking" id="9af825df-70fc-4479-9652-762ba91fbcc5"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:getBookingRequest>
+         <web:id>0</web:id>
+      </web:getBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="XPath Match" id="f9d7ce6e-ebdd-4131-b9b5-ac0c89ea44a5" name="XPath Match"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingResponse/ns2:booking[./ns2:id/text() = '0']/ns2:passenger/ns2:name</path><content>*</content><allowWildcards>true</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/getBookingRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="bca3c5fb-20de-458a-82a5-13d338832fc8" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="getBookings TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="createBooking" id="977d93d5-6854-45b3-a09c-061672267393"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>createBooking</con:operation><con:request name="createBooking" id="50e83e63-a5a8-46ca-8ad9-80cba50fce10"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:createBookingRequest>
+         <web:booking>
+            <web:passenger>
+               <web:name>Ondřej</web:name>
+               <web:surname>Starý</web:surname>
+            </web:passenger>
+
+            <web:departure>
+            	<web:time>2021-10-07T16:32:17.344+02:00</web:time>
+            	<web:airportId>ID_000</web:airportId>
+            </web:departure>
+              <web:arrival>
+            	<web:time>2021-10-08T10:32:17.344+02:00</web:time>
+            	<web:airportId>ID_000</web:airportId>
+            </web:arrival>
+         </web:booking>
+      </web:createBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response" id="b5f13a16-c552-40a5-81da-c64c708a96d5"/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" id="12b98695-18e8-4eff-ada9-e58c43ab04ec" name="getBookings"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>getBookings</con:operation><con:request name="getBookings" id="b4a2ce0a-9feb-4037-a0d3-d2bfbb992a99"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:getBookingsRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="XPath Match" id="48c9d985-85ec-4881-a4d6-6c73e4b8e9db" name="XPath Match"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingsResponse/ns2:booking/ns2:passenger/ns2:name[text() = 'Ondřej']</path><content>*</content><allowWildcards>true</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/getBookingsRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="f9336075-8cc0-40d7-b15d-ee6682b53350" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="updateBooking TestCase" searchProperties="true"><con:settings/><con:testStep type="request" id="73755ac4-11aa-4397-b57d-95e8e9eda1bf" name="getBookings"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>getBookings</con:operation><con:request name="getBookings" id="b4a2ce0a-9feb-4037-a0d3-d2bfbb992a99"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:getBookingsRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="XPath Match" id="48c9d985-85ec-4881-a4d6-6c73e4b8e9db" name="XPath Match"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingsResponse/ns2:booking[./ns2:id/text() = '0']/ns2:passenger/ns2:name</path><content>Alfonz</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/getBookingsRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="updateBooking" id="d8bd9139-f4b9-4e9e-9f7c-51f206e0eabc"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>createBooking</con:operation><con:request name="updateBooking" id="50e83e63-a5a8-46ca-8ad9-80cba50fce10"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:updateBookingRequest>
+         <web:booking>
+         <web:id>0</web:id>
+            <web:passenger>
+               <web:name>Filip</web:name>
+               <web:surname>Šikula</web:surname>
+            </web:passenger>
+            <web:departure>
+            	<web:time>2021-10-07T16:32:17.344+02:00</web:time>
+            	<web:airportId>ID_XXX</web:airportId>
+            </web:departure>
+              <web:arrival>
+            	<web:time>2021-10-08T10:32:17.344+02:00</web:time>
+            	<web:airportId>ID_XXX</web:airportId>
+            </web:arrival>
+         </web:booking>
+      </web:updateBookingRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="SOAP Response" id="b5f13a16-c552-40a5-81da-c64c708a96d5"/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" id="ad847e72-c7dc-4c40-8b2f-76ae96f9a898" name="getBookings afterUpdate"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ToursPortSoap11</con:interface><con:operation>getBookings</con:operation><con:request name="getBookings afterUpdate" id="b4a2ce0a-9feb-4037-a0d3-d2bfbb992a99"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8183/ws</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:getBookingsRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:assertion type="XPath Match" id="48c9d985-85ec-4881-a4d6-6c73e4b8e9db" name="XPath name"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingsResponse/ns2:booking[./ns2:id/text() = '0']/ns2:passenger/ns2:name</path><content>Filip</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" id="340603a3-c681-4173-ad62-109022ee646a" name="XPath Airport"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingsResponse/ns2:booking[./ns2:id/text() = '0']/ns2:arrival/ns2:airportId</path><content>ID_XXX</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" id="057e29fa-bf86-48c5-9f00-6428b061270a" name="XPath departure"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingsResponse/ns2:booking[./ns2:id/text() = '0']/ns2:departure/ns2:airportId</path><content>ID_XXX</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="XPath Match" id="078a610b-47b7-45a4-916c-2bb4ea557301" name="XPath surname"><con:configuration><path>declare namespace SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/';
+declare namespace ns2='https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/';
+
+//ns2:getBookingsResponse/ns2:booking[./ns2:id/text() = '0']/ns2:passenger/ns2:surname</path><content>Šikula</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/ToursPort/getBookingsRequest" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

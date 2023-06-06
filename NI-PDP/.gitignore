@@ -1,0 +1,7 @@
+/.vscode
+/.idea
+/cmake-build-debug
+/main
+basic.*
+!basic.tex
+node_modules

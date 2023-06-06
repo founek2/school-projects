@@ -1,0 +1,13 @@
+# Get in detail information about airports serving for cities "Keflavik", "Toronto", "Fort Nelson"
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+
+DESCRIBE ?airport
+WHERE {
+  GRAPH <http://192.168.10.219:9040/ni-swe2/data/airports> {
+    	?airport a dbo:Airport .
+      	?airport dbo:city ?city .
+        ?city dbp:name ?title .
+		FILTER(?title  IN ("Keflavik"@en, "Toronto"@en, "Fort Nelson"@en))
+  }
+}

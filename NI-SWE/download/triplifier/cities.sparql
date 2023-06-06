@@ -1,0 +1,44 @@
+prefix dbo: <http://dbpedia.org/ontology/>
+prefix dbp: <http://dbpedia.org/property/>
+prefix city: <http://cities.dev/resource/city/> 
+prefix country: <http://cities.dev/resource/country/> 
+prefix location: <http://cities.dev/resource/location/> 
+prefix xsd: <http://www.w3.org/2001/XMLSchema#> 
+prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+CONSTRUCT {
+  ?IRI a dbo:City, geo:Point ;
+    rdfs:label ?nameWithLang ;
+    dbp:name ?nameWithLang ;
+    dbp:pop ?populationWithType ;
+    dbp:country ?IRIcountry ;
+
+    geo:location  ?geometry ;
+    geo:lat ?latitudeWithType ;
+    geo:long ?longitudeWithType .
+
+  ?IRIcountry a dbo:Country ;
+    dbp:name ?countryWithLang ;
+    rdfs:label ?countryWithLang ;
+    dbo:iso31661Code ?iso2WithType ;
+    dbo:iso31661Code ?iso3WithType .
+  
+}
+FROM <file:worldcities.csv>
+WHERE {
+  bind(str(tarql:expandPrefix("city")) as ?cityNamespace)
+  BIND (IRI(CONCAT(?cityNamespace, ?id)) AS ?IRI)
+  BIND (STRLANG(?city, "en") AS ?nameWithLang)
+  BIND (STRDT(STR(ROUND(xsd:decimal(?population))), xsd:unsignedLong) AS ?populationWithType)
+  BIND (STRLANG(?country, "en") AS ?countryWithLang)
+  BIND (STR(tarql:expandPrefix("country")) as ?countryNamespace)
+  BIND (IRI(CONCAT(?countryNamespace, REPLACE(lcase(?country), " ", "_"))) AS ?IRIcountry)
+  BIND (STR(tarql:expandPrefix("location")) as ?locationNamespace)
+  BIND (IRI(CONCAT(?locationNamespace, STR(?ROWNUM))) AS ?IRIlocation)
+  BIND (STRDT(?lat, xsd:decimal) AS ?latitudeWithType)
+  BIND (STRDT(?lng, xsd:decimal) AS ?longitudeWithType)
+  BIND (STRDT(CONCAT("POINT(", ?lat, " ", ?lng, ")"), <http://www.openlinksw.com/schemas/virtrdf#Geometry>) AS ?geometry)
+  BIND (STRDT(?iso2, xsd:string) AS ?iso2WithType)
+  BIND (STRDT(?iso3, xsd:string) AS ?iso3WithType)
+}

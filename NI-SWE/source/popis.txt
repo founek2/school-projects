@@ -1,0 +1,22 @@
+Všechny datasety jsou ve formátu CSV, kde oddělovač je čárka.
+
+## World cities
+Dataset obsahuje města z celého světa. Jedná se o dataset, který není zatížený licencí resp. "Creative Commons Attribution 4.0" a proto obsahuje pouze 43K měst - placený obsahuje 4,3 milionů záznamů.
+Odkaz: https://simplemaps.com/data/world-cities
+Použité sloupce: city, lat, lng, country, iso2, iso3, capital, population, id
+Soubor: worldcities.csv
+
+## Airports
+OpenFlights projekt je OpenSource a také veřejně sdílí svá data o letištích, leteckých společnostech a dalších k volnému použití. 
+Licence pro tyto data je takzvaná otevřená databázová licence (ODbL) a umožňuje nekomerční využití zdarma.
+Dataset využívám "airports.dat", který jsem si doplnil o hlavičku (je to csv soubor). Obsahuje seznam přes 7K záznamů o letištích po celém světe.
+Odkaz: https://openflights.org/data.html
+Použité sloupce: id_airport, name, city, country, iata, icao, latitude, longitude, altitude
+Soubor: airports_header.csv
+
+## Air traffic data
+Data pochází ze sítě OpenSky (nezisková organizace). Síť získává data sledováním automatického radiového vysílání každého letadla, které tak udává svoji pozici ve vzduchu.
+Vybral jsem dataset obsahující data z provozu během 1. 4. 2020 až 30. 4. 2020. - protože i tak obsahuje přes 800K záznamů, tak jsem pro zjednodušení vzal pouze 1000 záznamů.
+Odkaz: https://zenodo.org/record/4485741#.YEOwRy3yquN
+Použité sloupce: callsign, number, icao24, registration, origin, destination, latitude_1, longitude_1, altitude_1
+Soubor:  flightlist_1000.csv

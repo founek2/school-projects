@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Lib.Formatting</span><span>
+</span><span id="line-2"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Lib.Formatting.html#prettify"><span class="hs-identifier">prettify</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="Lib.Formatting.html#prettifyNth"><span class="hs-identifier">prettifyNth</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="Lib.Formatting.html#prettifyTable"><span class="hs-identifier">prettifyTable</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="Lib.Formatting.html#prettifyBalance"><span class="hs-identifier">prettifyBalance</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Lib.Formatting.html#newLines"><span class="hs-identifier">newLines</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">where</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bifunctor</span></span><span> </span><span class="hs-keyword">qualified</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">find</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">groupBy</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intercalate</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">sortBy</span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Ord</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">comparing</span></span><span class="hs-special">)</span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Time</span></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Lib.DataTypes.html"><span class="hs-identifier">Lib.DataTypes</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier">Debt</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier">Debt</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier">Diary</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier">Diary</span></a></span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#%24sel%3Aamount%3ADebt"><span class="hs-identifier">amount</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#%24sel%3Aperson%3ADebt"><span class="hs-identifier">person</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#%24sel%3Arecords%3ADiary"><span class="hs-identifier">records</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Printf</span></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span class="hs-comment">-- | The 'newLines' function joins list of string with new line character.</span><span>
+</span><span id="line-19"></span><span class="hs-comment">--</span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- &gt;&gt;&gt; newLines [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]</span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- &quot;a\nb\nc&quot;</span><span>
+</span><span id="line-22"></span><span class="annot"><a href="Lib.Formatting.html#newLines"><span class="hs-identifier hs-type">newLines</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-23"></span><span id="newLines"><span class="annot"><span class="annottext">newLines :: [String] -&gt; String
+</span><a href="Lib.Formatting.html#newLines"><span class="hs-identifier hs-var hs-var">newLines</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall a. [a] -&gt; [[a]] -&gt; [a]
+</span><span class="hs-identifier hs-var">intercalate</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\n&quot;</span></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- | The 'prettify' function converts debt diary into human readable text</span><span>
+</span><span id="line-26"></span><span class="hs-comment">--</span><span>
+</span><span id="line-27"></span><span class="hs-comment">-- &gt;&gt;&gt; prettify diary</span><span>
+</span><span id="line-28"></span><span class="hs-comment">-- &quot;Diary title</span><span>
+</span><span id="line-29"></span><span class="hs-comment">--  diary note</span><span>
+</span><span id="line-30"></span><span class="hs-comment">--  records:</span><span>
+</span><span id="line-31"></span><span class="hs-comment">--  Idx: 0</span><span>
+</span><span id="line-32"></span><span class="hs-comment">--    person: John Doe&quot;,</span><span>
+</span><span id="line-33"></span><span class="hs-comment">--    note:</span><span>
+</span><span id="line-34"></span><span class="hs-comment">--    amount: 14.14</span><span>
+</span><span id="line-35"></span><span class="hs-comment">--    ts: 2011-11-19&quot;</span><span>
+</span><span id="line-36"></span><span class="annot"><a href="Lib.Formatting.html#prettify"><span class="hs-identifier hs-type">prettify</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-37"></span><span id="prettify"><span class="annot"><span class="annottext">prettify :: Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettify"><span class="hs-identifier hs-var hs-var">prettify</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span id="local-6989586621679087509"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087509"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span id="local-6989586621679087508"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087508"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span id="local-6989586621679087507"><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087507"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-38"></span><span>  </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="Lib.Formatting.html#newLines"><span class="hs-identifier hs-var">newLines</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">[</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087509"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087508"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;records:&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="Lib.Formatting.html#newLines"><span class="hs-identifier hs-var">newLines</span></a></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a b c. (a -&gt; b -&gt; c) -&gt; [a] -&gt; [b] -&gt; [c]
+</span><span class="hs-identifier hs-var">zipWith</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a b c. ((a, b) -&gt; c) -&gt; a -&gt; b -&gt; c
+</span><span class="hs-identifier hs-var">curry</span></span><span> </span><span class="annot"><span class="annottext">forall a. Show a =&gt; (a, Debt) -&gt; String
+</span><a href="Lib.Formatting.html#prettifyRecord"><span class="hs-identifier hs-var">prettifyRecord</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Integer
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Integer</span></span><span> </span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087507"><span class="hs-identifier hs-var">r</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-40"></span><span>
+</span><span id="line-41"></span><span class="hs-comment">-- | The 'prettifyNth' function converts nth debt record into human readable text</span><span>
+</span><span id="line-42"></span><span class="hs-comment">--</span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- &gt;&gt;&gt; prettifyNth idx diary</span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- &quot;Idx: 1</span><span>
+</span><span id="line-45"></span><span class="hs-comment">--   person: John Doe</span><span>
+</span><span id="line-46"></span><span class="hs-comment">--   note:</span><span>
+</span><span id="line-47"></span><span class="hs-comment">--   amount: 22.22</span><span>
+</span><span id="line-48"></span><span class="hs-comment">--   ts: 2022-11-1&quot;</span><span>
+</span><span id="line-49"></span><span class="annot"><a href="Lib.Formatting.html#prettifyNth"><span class="hs-identifier hs-type">prettifyNth</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-50"></span><span id="prettifyNth"><span class="annot"><span class="annottext">prettifyNth :: Int -&gt; Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettifyNth"><span class="hs-identifier hs-var hs-var">prettifyNth</span></a></span></span><span> </span><span id="local-6989586621679087503"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087503"><span class="hs-identifier hs-var">idx</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span id="local-6989586621679087502"><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087502"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Maybe (Int, Debt)
+</span><a href="#local-6989586621679087501"><span class="hs-identifier hs-var">itemOpt</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-51"></span><span>  </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679087500"><span class="annot"><span class="annottext">(Int, Debt)
+</span><a href="#local-6989586621679087500"><span class="hs-identifier hs-var">item</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall a. Show a =&gt; (a, Debt) -&gt; String
+</span><a href="Lib.Formatting.html#prettifyRecord"><span class="hs-identifier hs-var">prettifyRecord</span></a></span><span> </span><span class="annot"><span class="annottext">(Int, Debt)
+</span><a href="#local-6989586621679087500"><span class="hs-identifier hs-var">item</span></a></span><span>
+</span><span id="line-52"></span><span>  </span><span class="annot"><span class="annottext">Maybe (Int, Debt)
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall a. HasCallStack =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;item was not found&quot;</span></span><span>
+</span><span id="line-53"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-54"></span><span>    </span><span id="local-6989586621679087501"><span class="annot"><span class="annottext">itemOpt :: Maybe (Int, Debt)
+</span><a href="#local-6989586621679087501"><span class="hs-identifier hs-var hs-var">itemOpt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; Bool) -&gt; t a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">find</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679087492"><span class="annot"><span class="annottext">(Int, Debt)
+</span><a href="#local-6989586621679087492"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">(Int, Debt)
+</span><a href="#local-6989586621679087492"><span class="hs-identifier hs-var">x</span></a></span><span> </span><span class="annot"><span class="annottext">forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087503"><span class="hs-identifier hs-var">idx</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a b. [a] -&gt; [b] -&gt; [(a, b)]
+</span><span class="hs-identifier hs-var">zip</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="annottext">Int
+</span><span class="hs-number">0</span></span><span> </span><span class="hs-glyph">..</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087502"><span class="hs-identifier hs-var">r</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span class="hs-comment">-- | The 'prettifyRecord' function converts debt record into human readable text</span><span>
+</span><span id="line-57"></span><span class="hs-comment">--</span><span>
+</span><span id="line-58"></span><span class="hs-comment">-- &gt;&gt;&gt; prettifyRecord (idx, record)</span><span>
+</span><span id="line-59"></span><span class="hs-comment">-- &quot;Idx: 1</span><span>
+</span><span id="line-60"></span><span class="hs-comment">--   person: John Doe</span><span>
+</span><span id="line-61"></span><span class="hs-comment">--   note:</span><span>
+</span><span id="line-62"></span><span class="hs-comment">--   amount: 22.22</span><span>
+</span><span id="line-63"></span><span class="hs-comment">--   ts: 2022-11-1&quot;</span><span>
+</span><span id="line-64"></span><span id="local-6989586621679087594"><span class="annot"><a href="Lib.Formatting.html#prettifyRecord"><span class="hs-identifier hs-type">prettifyRecord</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Show</span></span><span> </span><span class="annot"><a href="#local-6989586621679087594"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679087594"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier hs-type">Debt</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span></span><span>
+</span><span id="line-65"></span><span id="prettifyRecord"><span class="annot"><span class="annottext">prettifyRecord :: forall a. Show a =&gt; (a, Debt) -&gt; String
+</span><a href="Lib.Formatting.html#prettifyRecord"><span class="hs-identifier hs-var hs-var">prettifyRecord</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679087482"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087482"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier hs-type">Debt</span></a></span><span> </span><span id="local-6989586621679087481"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087481"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span id="local-6989586621679087480"><span class="annot"><span class="annottext">Double
+</span><a href="#local-6989586621679087480"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span id="local-6989586621679087479"><span class="annot"><span class="annottext">Maybe String
+</span><a href="#local-6989586621679087479"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span id="local-6989586621679087478"><span class="annot"><span class="annottext">UTCTime
+</span><a href="#local-6989586621679087478"><span class="hs-identifier hs-var">ts</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-66"></span><span>  </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="Lib.Formatting.html#newLines"><span class="hs-identifier hs-var">newLines</span></a></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">[</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Idx: &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087482"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-68"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; person: &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087481"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-69"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; note: &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">forall a. a -&gt; Maybe a -&gt; a
+</span><span class="hs-identifier hs-var">fromMaybe</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;&quot;</span></span><span> </span><span class="annot"><span class="annottext">Maybe String
+</span><a href="#local-6989586621679087479"><span class="hs-identifier hs-var">n</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-70"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; amount: &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Double -&gt; String
+</span><a href="Lib.Formatting.html#showFloat"><span class="hs-identifier hs-var">showFloat</span></a></span><span> </span><span class="annot"><span class="annottext">Double
+</span><a href="#local-6989586621679087480"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-71"></span><span>      </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; ts: &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">forall t. FormatTime t =&gt; TimeLocale -&gt; String -&gt; t -&gt; String
+</span><span class="hs-identifier hs-var">formatTime</span></span><span> </span><span class="annot"><span class="annottext">TimeLocale
+</span><span class="hs-identifier hs-var">defaultTimeLocale</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;%Y-%m-%d&quot;</span></span><span> </span><span class="annot"><span class="annottext">UTCTime
+</span><a href="#local-6989586621679087478"><span class="hs-identifier hs-var">ts</span></a></span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-special">]</span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span class="hs-comment">-- | The 'prettifyTable' sum debt per user and converts into human readable table</span><span>
+</span><span id="line-75"></span><span class="hs-comment">--</span><span>
+</span><span id="line-76"></span><span class="hs-comment">-- &gt;&gt;&gt; prettifyTable diary</span><span>
+</span><span id="line-77"></span><span class="hs-comment">-- &quot;| Name     | Amount |</span><span>
+</span><span id="line-78"></span><span class="hs-comment">--  | John Doe | 36.36  |&quot;</span><span>
+</span><span id="line-79"></span><span class="annot"><a href="Lib.Formatting.html#prettifyTable"><span class="hs-identifier hs-type">prettifyTable</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-80"></span><span id="prettifyTable"><span class="annot"><span class="annottext">prettifyTable :: Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettifyTable"><span class="hs-identifier hs-var hs-var">prettifyTable</span></a></span></span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">$sel:records:Diary :: Diary -&gt; [Debt]
+</span><a href="Lib.DataTypes.html#%24sel%3Arecords%3ADiary"><span class="hs-identifier hs-var">records</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679087472"><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087472"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">}</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-81"></span><span>  </span><span class="annot"><span class="annottext">[String] -&gt; String
+</span><a href="Lib.Formatting.html#newLines"><span class="hs-identifier hs-var">newLines</span></a></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-82"></span><span>    </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span>
+</span><span id="line-83"></span><span>      </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679087471"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087471"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679087470"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087470"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;| &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Lib.Formatting.html#spacePadding"><span class="hs-identifier hs-var">spacePadding</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087468"><span class="hs-identifier hs-var">lenFstColumn</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087471"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; | &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; String -&gt; String
+</span><a href="Lib.Formatting.html#spacePadding"><span class="hs-identifier hs-var">spacePadding</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087467"><span class="hs-identifier hs-var">lenSndColumn</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087470"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot; |&quot;</span></span><span class="hs-special">)</span><span>
+</span><span id="line-84"></span><span>      </span><span class="annot"><span class="annottext">[(String, String)]
+</span><a href="#local-6989586621679087466"><span class="hs-identifier hs-var">lst</span></a></span><span>
+</span><span id="line-85"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-86"></span><span>    </span><span id="local-6989586621679087463"><span class="annot"><span class="annottext">summed :: [(String, String)]
+</span><a href="#local-6989586621679087463"><span class="hs-identifier hs-var hs-var">summed</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall (p :: * -&gt; * -&gt; *) b c a.
+Bifunctor p =&gt;
+(b -&gt; c) -&gt; p a b -&gt; p a c
+</span><span class="hs-identifier hs-var">Data.Bifunctor.second</span></span><span> </span><span class="annot"><span class="annottext">Double -&gt; String
+</span><a href="Lib.Formatting.html#showFloat"><span class="hs-identifier hs-var">showFloat</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Debt] -&gt; [(String, Double)]
+</span><a href="Lib.Formatting.html#sumPerUser"><span class="hs-identifier hs-var">sumPerUser</span></a></span><span> </span><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087472"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-87"></span><span>    </span><span id="local-6989586621679087466"><span class="annot"><span class="annottext">lst :: [(String, String)]
+</span><a href="#local-6989586621679087466"><span class="hs-identifier hs-var hs-var">lst</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Name&quot;</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Amount&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span> </span><span class="annot"><span class="annottext">[(String, String)]
+</span><a href="#local-6989586621679087463"><span class="hs-identifier hs-var">summed</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span id="local-6989586621679087468"><span class="annot"><span class="annottext">lenFstColumn :: Int
+</span><a href="#local-6989586621679087468"><span class="hs-identifier hs-var hs-var">lenFstColumn</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. (Foldable t, Ord a) =&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">maximum</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(String, String)]
+</span><a href="#local-6989586621679087466"><span class="hs-identifier hs-var">lst</span></a></span><span>
+</span><span id="line-89"></span><span>    </span><span id="local-6989586621679087467"><span class="annot"><span class="annottext">lenSndColumn :: Int
+</span><a href="#local-6989586621679087467"><span class="hs-identifier hs-var hs-var">lenSndColumn</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. (Foldable t, Ord a) =&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">maximum</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(String, String)]
+</span><a href="#local-6989586621679087466"><span class="hs-identifier hs-var">lst</span></a></span><span>
+</span><span id="line-90"></span><span>
+</span><span id="line-91"></span><span class="hs-comment">-- | The 'prettifyBalance' sum all debt and create human readable string</span><span>
+</span><span id="line-92"></span><span class="hs-comment">--</span><span>
+</span><span id="line-93"></span><span class="hs-comment">-- &gt;&gt;&gt; prettifyBalance diary</span><span>
+</span><span id="line-94"></span><span class="hs-comment">-- &quot;Balance: 300.33&quot;</span><span>
+</span><span id="line-95"></span><span class="annot"><a href="Lib.Formatting.html#prettifyBalance"><span class="hs-identifier hs-type">prettifyBalance</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-96"></span><span id="prettifyBalance"><span class="annot"><span class="annottext">prettifyBalance :: Diary -&gt; String
+</span><a href="Lib.Formatting.html#prettifyBalance"><span class="hs-identifier hs-var hs-var">prettifyBalance</span></a></span></span><span> </span><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-type">Diary</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">$sel:records:Diary :: Diary -&gt; [Debt]
+</span><a href="Lib.DataTypes.html#%24sel%3Arecords%3ADiary"><span class="hs-identifier hs-var">records</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679087450"><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087450"><span class="hs-identifier hs-var">r</span></a></span></span><span class="hs-special">}</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-97"></span><span>  </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Balance: &quot;</span></span><span> </span><span class="annot"><span class="annottext">forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Double -&gt; String
+</span><a href="Lib.Formatting.html#showFloat"><span class="hs-identifier hs-var">showFloat</span></a></span><span> </span><span class="annot"><span class="annottext">Double
+</span><a href="#local-6989586621679087449"><span class="hs-identifier hs-var">totalAmount</span></a></span><span>
+</span><span id="line-98"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-99"></span><span>    </span><span id="local-6989586621679087448"><span class="annot"><span class="annottext">summed :: [(String, Double)]
+</span><a href="#local-6989586621679087448"><span class="hs-identifier hs-var hs-var">summed</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Debt] -&gt; [(String, Double)]
+</span><a href="Lib.Formatting.html#sumPerUser"><span class="hs-identifier hs-var">sumPerUser</span></a></span><span> </span><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087450"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-100"></span><span>    </span><span id="local-6989586621679087449"><span class="annot"><span class="annottext">totalAmount :: Double
+</span><a href="#local-6989586621679087449"><span class="hs-identifier hs-var hs-var">totalAmount</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. (Foldable t, Num a) =&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">sum</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">[(String, Double)]
+</span><a href="#local-6989586621679087448"><span class="hs-identifier hs-var">summed</span></a></span><span>
+</span><span id="line-101"></span><span>
+</span><span id="line-102"></span><span class="hs-comment">-- | Add space padding after text</span><span>
+</span><span id="line-103"></span><span class="hs-comment">--</span><span>
+</span><span id="line-104"></span><span class="hs-comment">-- &gt;&gt;&gt; spacePadding 4 &quot;hi&quot;</span><span>
+</span><span id="line-105"></span><span class="hs-comment">-- &quot;hi  &quot;</span><span>
+</span><span id="line-106"></span><span class="annot"><a href="Lib.Formatting.html#spacePadding"><span class="hs-identifier hs-type">spacePadding</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-107"></span><span id="spacePadding"><span class="annot"><span class="annottext">spacePadding :: Int -&gt; String -&gt; String
+</span><a href="Lib.Formatting.html#spacePadding"><span class="hs-identifier hs-var hs-var">spacePadding</span></a></span></span><span> </span><span id="local-6989586621679087443"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087443"><span class="hs-identifier hs-var">l</span></a></span></span><span> </span><span id="local-6989586621679087442"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087442"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087442"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">forall a. Int -&gt; a -&gt; [a]
+</span><span class="hs-identifier hs-var">replicate</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679087443"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">forall a. Num a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-glyph hs-var">-</span></span><span> </span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. Foldable t =&gt; t a -&gt; Int
+</span><span class="hs-identifier hs-var">length</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087442"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Char
+</span><span class="hs-char">' '</span></span><span>
+</span><span id="line-108"></span><span>
+</span><span id="line-109"></span><span class="annot"><a href="Lib.Formatting.html#sumPerUser"><span class="hs-identifier hs-type">sumPerUser</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier hs-type">Debt</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Double</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-110"></span><span id="sumPerUser"><span class="annot"><span class="annottext">sumPerUser :: [Debt] -&gt; [(String, Double)]
+</span><a href="Lib.Formatting.html#sumPerUser"><span class="hs-identifier hs-var hs-var">sumPerUser</span></a></span></span><span> </span><span id="local-6989586621679087440"><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087440"><span class="hs-identifier hs-var">r</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[(String, Double)]
+</span><a href="#local-6989586621679087439"><span class="hs-identifier hs-var">summed</span></a></span><span>
+</span><span id="line-111"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-112"></span><span>    </span><span id="local-6989586621679087436"><span class="annot"><span class="annottext">sorted :: [(String, Double)]
+</span><a href="#local-6989586621679087436"><span class="hs-identifier hs-var hs-var">sorted</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall a. (a -&gt; a -&gt; Ordering) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">sortBy</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall a b. Ord a =&gt; (b -&gt; a) -&gt; b -&gt; b -&gt; Ordering
+</span><span class="hs-identifier hs-var">comparing</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier hs-type">Debt</span></a></span><span> </span><span class="hs-special">{</span><span class="annot"><span class="annottext">$sel:person:Debt :: Debt -&gt; String
+</span><a href="Lib.DataTypes.html#%24sel%3Aperson%3ADebt"><span class="hs-identifier hs-var">person</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679087435"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087435"><span class="hs-identifier hs-var">p</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">$sel:amount:Debt :: Debt -&gt; Double
+</span><a href="Lib.DataTypes.html#%24sel%3Aamount%3ADebt"><span class="hs-identifier hs-var">amount</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="local-6989586621679087434"><span class="annot"><span class="annottext">Double
+</span><a href="#local-6989586621679087434"><span class="hs-identifier hs-var">a</span></a></span></span><span class="hs-special">}</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087435"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Double
+</span><a href="#local-6989586621679087434"><span class="hs-identifier hs-var">a</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Debt]
+</span><a href="#local-6989586621679087440"><span class="hs-identifier hs-var">r</span></a></span><span>
+</span><span id="line-113"></span><span>    </span><span id="local-6989586621679087429"><span class="annot"><span class="annottext">grouped :: [[(String, Double)]]
+</span><a href="#local-6989586621679087429"><span class="hs-identifier hs-var hs-var">grouped</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall a. (a -&gt; a -&gt; Bool) -&gt; [a] -&gt; [[a]]
+</span><span class="hs-identifier hs-var">groupBy</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679087428"><span class="annot"><span class="annottext">(String, Double)
+</span><a href="#local-6989586621679087428"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span id="local-6989586621679087427"><span class="annot"><span class="annottext">(String, Double)
+</span><a href="#local-6989586621679087427"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">(String, Double)
+</span><a href="#local-6989586621679087428"><span class="hs-identifier hs-var">a</span></a></span><span> </span><span class="annot"><span class="annottext">forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span> </span><span class="annot"><span class="annottext">(String, Double)
+</span><a href="#local-6989586621679087427"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(String, Double)]
+</span><a href="#local-6989586621679087436"><span class="hs-identifier hs-var">sorted</span></a></span><span>
+</span><span id="line-114"></span><span>    </span><span id="local-6989586621679087439"><span class="annot"><span class="annottext">summed :: [(String, Double)]
+</span><a href="#local-6989586621679087439"><span class="hs-identifier hs-var hs-var">summed</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679087424"><span class="annot"><span class="annottext">x :: [(String, Double)]
+</span><a href="#local-6989586621679087424"><span class="hs-identifier hs-var">x</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="hs-special">(</span><span id="local-6989586621679087423"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087423"><span class="hs-identifier hs-var">name</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Double
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span> </span><span class="annot"><span class="annottext">[(String, Double)]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087423"><span class="hs-identifier hs-var">name</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">forall (t :: * -&gt; *) a. (Foldable t, Num a) =&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">sum</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">[(String, Double)]
+</span><a href="#local-6989586621679087424"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[[(String, Double)]]
+</span><a href="#local-6989586621679087429"><span class="hs-identifier hs-var">grouped</span></a></span><span>
+</span><span id="line-115"></span><span>
+</span><span id="line-116"></span><span class="annot"><a href="Lib.Formatting.html#showFloat"><span class="hs-identifier hs-type">showFloat</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Double</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-117"></span><span id="showFloat"><span class="annot"><span class="annottext">showFloat :: Double -&gt; String
+</span><a href="Lib.Formatting.html#showFloat"><span class="hs-identifier hs-var hs-var">showFloat</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">forall r. PrintfType r =&gt; String -&gt; r
+</span><span class="hs-identifier hs-var">printf</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;%.2f&quot;</span></span><span>
+</span><span id="line-118"></span></pre></body></html>

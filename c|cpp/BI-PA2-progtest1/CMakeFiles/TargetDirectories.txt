@@ -1,0 +1,4 @@
+/Users/martas/CLionProjects/progtest1/CMakeFiles/rebuild_cache.dir
+/Users/martas/CLionProjects/progtest1/CMakeFiles/edit_cache.dir
+/Users/martas/CLionProjects/progtest1/CMakeFiles/karel.dir
+/Users/martas/CLionProjects/progtest1/CMakeFiles/progtest1.dir

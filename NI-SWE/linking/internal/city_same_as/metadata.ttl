@@ -1,0 +1,18 @@
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix : <#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:Countries a void:Dataset .
+:Airports a void:Dataset .
+
+:Airports_Countries a void:Linkset;
+    void:objectsTarget :Countries;
+    void:subjectsTarget :Airports;
+    void:linkPredicate owl:sameAs
+    .
+
+<> a void:DatasetDescription;
+    dcterms:title "Propojení stejných měst na základě shodnosti jejich názvů a zda se nachází ve stejné zemi"@cs;
+    dcterms:creator <https://martin.skalicky.cz/#me>;
+    .

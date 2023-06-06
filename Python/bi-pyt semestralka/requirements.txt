@@ -1,0 +1,4 @@
+Pillow==7.0.0
+argparse==1.4.0
+numpy==1.18.0
+pytest==5.3.2

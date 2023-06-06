@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DeriveAnyClass #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveGeneric #-}</span><span>
+</span><span id="line-3"></span><span class="hs-pragma">{-# LANGUAGE DuplicateRecordFields #-}</span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Lib.DataTypes</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Aeson</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">FromJSON</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">ToJSON</span></span><span class="hs-special">)</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Time</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">UTCTime</span></span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">GHC.Generics</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Generic</span></span><span class="hs-special">)</span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span class="hs-comment">-- | Container for Debt record data</span><span>
+</span><span id="line-12"></span><span id="local-6989586621679086949"><span id="local-6989586621679086950"></span></span><span class="hs-keyword">data</span><span> </span><span id="Debt"><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier hs-var">Debt</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Debt"><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier hs-var">Debt</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-special">{</span><span> </span><span id="%24sel%3Aperson%3ADebt"><span class="annot"><span class="annottext">Debt -&gt; String
+</span><a href="Lib.DataTypes.html#%24sel%3Aperson%3ADebt"><span class="hs-identifier hs-var hs-var">person</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span>
+</span><span id="line-14"></span><span>    </span><span id="%24sel%3Aamount%3ADebt"><span class="annot"><span class="annottext">Debt -&gt; Double
+</span><a href="Lib.DataTypes.html#%24sel%3Aamount%3ADebt"><span class="hs-identifier hs-var hs-var">amount</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Double</span></span><span class="hs-special">,</span><span>
+</span><span id="line-15"></span><span>    </span><span id="%24sel%3Anote%3ADebt"><span class="annot"><span class="annottext">Debt -&gt; Maybe String
+</span><a href="Lib.DataTypes.html#%24sel%3Anote%3ADebt"><span class="hs-identifier hs-var hs-var">note</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span>
+</span><span id="line-16"></span><span>    </span><span id="%24sel%3Atimestamp%3ADebt"><span class="annot"><span class="annottext">Debt -&gt; UTCTime
+</span><a href="Lib.DataTypes.html#%24sel%3Atimestamp%3ADebt"><span class="hs-identifier hs-var hs-var">timestamp</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-special">}</span><span>
+</span><span id="line-18"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall x. Rep Debt x -&gt; Debt
+forall x. Debt -&gt; Rep Debt x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep Debt x -&gt; Debt
+$cfrom :: forall x. Debt -&gt; Rep Debt x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086924"><span id="local-6989586621679086926"><span id="local-6989586621679086939"><span class="annot"><span class="annottext">Int -&gt; Debt -&gt; ShowS
+[Debt] -&gt; ShowS
+Debt -&gt; String
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Debt] -&gt; ShowS
+$cshowList :: [Debt] -&gt; ShowS
+show :: Debt -&gt; String
+$cshow :: Debt -&gt; String
+showsPrec :: Int -&gt; Debt -&gt; ShowS
+$cshowsPrec :: Int -&gt; Debt -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086909"><span id="local-6989586621679086920"><span class="annot"><span class="annottext">Debt -&gt; Debt -&gt; Bool
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Debt -&gt; Debt -&gt; Bool
+$c/= :: Debt -&gt; Debt -&gt; Bool
+== :: Debt -&gt; Debt -&gt; Bool
+$c== :: Debt -&gt; Debt -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086899"><span id="local-6989586621679086901"><span id="local-6989586621679086903"><span id="local-6989586621679086905"><span class="annot"><span class="annottext">[Debt] -&gt; Encoding
+[Debt] -&gt; Value
+Debt -&gt; Encoding
+Debt -&gt; Value
+forall a.
+(a -&gt; Value)
+-&gt; (a -&gt; Encoding)
+-&gt; ([a] -&gt; Value)
+-&gt; ([a] -&gt; Encoding)
+-&gt; ToJSON a
+toEncodingList :: [Debt] -&gt; Encoding
+$ctoEncodingList :: [Debt] -&gt; Encoding
+toJSONList :: [Debt] -&gt; Value
+$ctoJSONList :: [Debt] -&gt; Value
+toEncoding :: Debt -&gt; Encoding
+$ctoEncoding :: Debt -&gt; Encoding
+toJSON :: Debt -&gt; Value
+$ctoJSON :: Debt -&gt; Value
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">ToJSON</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086894"><span id="local-6989586621679086896"><span class="annot"><span class="annottext">Value -&gt; Parser [Debt]
+Value -&gt; Parser Debt
+forall a.
+(Value -&gt; Parser a) -&gt; (Value -&gt; Parser [a]) -&gt; FromJSON a
+parseJSONList :: Value -&gt; Parser [Debt]
+$cparseJSONList :: Value -&gt; Parser [Debt]
+parseJSON :: Value -&gt; Parser Debt
+$cparseJSON :: Value -&gt; Parser Debt
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">FromJSON</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- | Container for Debt diary data</span><span>
+</span><span id="line-21"></span><span id="local-6989586621679086891"><span id="local-6989586621679086892"></span></span><span class="hs-keyword">data</span><span> </span><span id="Diary"><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-var">Diary</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Diary"><span class="annot"><a href="Lib.DataTypes.html#Diary"><span class="hs-identifier hs-var">Diary</span></a></span></span><span>
+</span><span id="line-22"></span><span>  </span><span class="hs-special">{</span><span> </span><span id="%24sel%3Atitle%3ADiary"><span class="annot"><span class="annottext">Diary -&gt; String
+</span><a href="Lib.DataTypes.html#%24sel%3Atitle%3ADiary"><span class="hs-identifier hs-var hs-var">title</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span>
+</span><span id="line-23"></span><span>    </span><span id="%24sel%3Anote%3ADiary"><span class="annot"><span class="annottext">Diary -&gt; String
+</span><a href="Lib.DataTypes.html#%24sel%3Anote%3ADiary"><span class="hs-identifier hs-var hs-var">note</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">,</span><span>
+</span><span id="line-24"></span><span>    </span><span id="%24sel%3Arecords%3ADiary"><span class="annot"><span class="annottext">Diary -&gt; [Debt]
+</span><a href="Lib.DataTypes.html#%24sel%3Arecords%3ADiary"><span class="hs-identifier hs-var hs-var">records</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Lib.DataTypes.html#Debt"><span class="hs-identifier hs-type">Debt</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-25"></span><span>  </span><span class="hs-special">}</span><span>
+</span><span id="line-26"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">forall x. Rep Diary x -&gt; Diary
+forall x. Diary -&gt; Rep Diary x
+forall a.
+(forall x. a -&gt; Rep a x) -&gt; (forall x. Rep a x -&gt; a) -&gt; Generic a
+$cto :: forall x. Rep Diary x -&gt; Diary
+$cfrom :: forall x. Diary -&gt; Rep Diary x
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">Generic</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086873"><span id="local-6989586621679086875"><span id="local-6989586621679086883"><span class="annot"><span class="annottext">Int -&gt; Diary -&gt; ShowS
+[Diary] -&gt; ShowS
+Diary -&gt; String
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Diary] -&gt; ShowS
+$cshowList :: [Diary] -&gt; ShowS
+show :: Diary -&gt; String
+$cshow :: Diary -&gt; String
+showsPrec :: Int -&gt; Diary -&gt; ShowS
+$cshowsPrec :: Int -&gt; Diary -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086864"><span id="local-6989586621679086871"><span class="annot"><span class="annottext">Diary -&gt; Diary -&gt; Bool
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Diary -&gt; Diary -&gt; Bool
+$c/= :: Diary -&gt; Diary -&gt; Bool
+== :: Diary -&gt; Diary -&gt; Bool
+$c== :: Diary -&gt; Diary -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086856"><span id="local-6989586621679086858"><span id="local-6989586621679086860"><span id="local-6989586621679086862"><span class="annot"><span class="annottext">[Diary] -&gt; Encoding
+[Diary] -&gt; Value
+Diary -&gt; Encoding
+Diary -&gt; Value
+forall a.
+(a -&gt; Value)
+-&gt; (a -&gt; Encoding)
+-&gt; ([a] -&gt; Value)
+-&gt; ([a] -&gt; Encoding)
+-&gt; ToJSON a
+toEncodingList :: [Diary] -&gt; Encoding
+$ctoEncodingList :: [Diary] -&gt; Encoding
+toJSONList :: [Diary] -&gt; Value
+$ctoJSONList :: [Diary] -&gt; Value
+toEncoding :: Diary -&gt; Encoding
+$ctoEncoding :: Diary -&gt; Encoding
+toJSON :: Diary -&gt; Value
+$ctoJSON :: Diary -&gt; Value
+</span><a href="#local-6989586621679086856"><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">ToJSON</span></a></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086852"><span id="local-6989586621679086854"><span class="annot"><span class="annottext">Value -&gt; Parser [Diary]
+Value -&gt; Parser Diary
+forall a.
+(Value -&gt; Parser a) -&gt; (Value -&gt; Parser [a]) -&gt; FromJSON a
+parseJSONList :: Value -&gt; Parser [Diary]
+$cparseJSONList :: Value -&gt; Parser [Diary]
+parseJSON :: Value -&gt; Parser Diary
+$cparseJSON :: Value -&gt; Parser Diary
+</span><a href="#local-6989586621679086852"><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">FromJSON</span></a></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span>
+</span><span id="line-28"></span><span class="hs-keyword">data</span><span> </span><span id="Error"><span class="annot"><a href="Lib.DataTypes.html#Error"><span class="hs-identifier hs-var">Error</span></a></span></span><span>
+</span><span id="line-29"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="IndexOutOfRange"><span class="annot"><a href="Lib.DataTypes.html#IndexOutOfRange"><span class="hs-identifier hs-var">IndexOutOfRange</span></a></span></span><span>
+</span><span id="line-30"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="IndexMustBeNumber"><span class="annot"><a href="Lib.DataTypes.html#IndexMustBeNumber"><span class="hs-identifier hs-var">IndexMustBeNumber</span></a></span></span><span>
+</span><span id="line-31"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="InputMustBeNumber"><span class="annot"><a href="Lib.DataTypes.html#InputMustBeNumber"><span class="hs-identifier hs-var">InputMustBeNumber</span></a></span></span><span>
+</span><span id="line-32"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="UnableReadFile"><span class="annot"><a href="Lib.DataTypes.html#UnableReadFile"><span class="hs-identifier hs-var">UnableReadFile</span></a></span></span><span>
+</span><span id="line-33"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="UnableWriteFile"><span class="annot"><a href="Lib.DataTypes.html#UnableWriteFile"><span class="hs-identifier hs-var">UnableWriteFile</span></a></span></span><span>
+</span><span id="line-34"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="UnableToDecodeJSON"><span class="annot"><a href="Lib.DataTypes.html#UnableToDecodeJSON"><span class="hs-identifier hs-var">UnableToDecodeJSON</span></a></span></span><span>
+</span><span id="line-35"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679086840"><span id="local-6989586621679086842"><span id="local-6989586621679086844"><span class="annot"><span class="annottext">Int -&gt; Error -&gt; ShowS
+[Error] -&gt; ShowS
+Error -&gt; String
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Error] -&gt; ShowS
+$cshowList :: [Error] -&gt; ShowS
+show :: Error -&gt; String
+$cshow :: Error -&gt; String
+showsPrec :: Int -&gt; Error -&gt; ShowS
+$cshowsPrec :: Int -&gt; Error -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086824"><span id="local-6989586621679086833"><span id="local-6989586621679086836"><span id="local-6989586621679086838"><span class="annot"><span class="annottext">ReadPrec [Error]
+ReadPrec Error
+Int -&gt; ReadS Error
+ReadS [Error]
+forall a.
+(Int -&gt; ReadS a)
+-&gt; ReadS [a] -&gt; ReadPrec a -&gt; ReadPrec [a] -&gt; Read a
+readListPrec :: ReadPrec [Error]
+$creadListPrec :: ReadPrec [Error]
+readPrec :: ReadPrec Error
+$creadPrec :: ReadPrec Error
+readList :: ReadS [Error]
+$creadList :: ReadS [Error]
+readsPrec :: Int -&gt; ReadS Error
+$creadsPrec :: Int -&gt; ReadS Error
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Read</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679086818"><span id="local-6989586621679086820"><span class="annot"><span class="annottext">Error -&gt; Error -&gt; Bool
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Error -&gt; Error -&gt; Bool
+$c/= :: Error -&gt; Error -&gt; Bool
+== :: Error -&gt; Error -&gt; Bool
+$c== :: Error -&gt; Error -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span></pre></body></html>

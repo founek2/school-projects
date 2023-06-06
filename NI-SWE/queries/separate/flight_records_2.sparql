@@ -1,0 +1,26 @@
+# Construct flight record (without lat,lng,alt) with mandatory fields destination, origin and registration
+prefix my: <http://localhost/vocabulary/terms/> 
+prefix resource: <http://localhost/resources/> 
+prefix xsd: <http://www.w3.org/2001/XMLSchema#> 
+
+CONSTRUCT { ?iri a resource:FlightRecord;
+    			my:destination ?destination ;
+    			my:origin ?origin ;
+          my:registration ?registrationStr ;
+          my:callsign      ?callsignStr ;
+          my:icao24       ?icao24Str .
+}
+WHERE {
+  GRAPH 	<http://192.168.10.219:9040/ni-swe2/data/flight_records> {
+  	?iri a my:FlightRecord .
+    ?iri my:destination ?destination .
+    ?iri my:origin ?origin .
+    ?iri my:registration ?registration .
+    ?iri my:callsign ?callsign .
+    ?iri my:icao24 ?icao24
+  }
+
+  BIND(STRDT(?registration, xsd:string) as ?registrationStr ) 
+  BIND(STRDT(?callsign, xsd:string) as ?callsignStr ) 
+  BIND(STRDT(?icao24, xsd:string) as ?icao24Str ) 
+}

@@ -1,0 +1,133 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ns1: <https://data.gov.cz/slovník/podmínky-užití/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Catalog
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/catalog> a dcat:Distribution ;
+    dcterms:title "Katalog pro moje super datasety"@cs;
+    dcterms:description "Tento katalog obsahuje tři datasety: velké města z celého světa, letiště z celého světa a letové záznamy."@cs;
+    dcterms:publisher <https://martin.skalicky.cz/#me> ;
+    dcat:dataset 
+        <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/airports>,
+        <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records>,
+        <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records> ;
+    foaf:homepage <https://martin.skalicky.cz/catalogues> ;
+    dcat:record <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/catalog/record> ;
+    dcat:accessURL <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/-/raw/master/download/output/> .
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/catalog/record> a dcat:CatalogRecord ;
+    foaf:primaryTopic "Publikování datasetů"@cs ;
+    dcterms:modified "2022-12-15"^^xsd:date .
+
+
+# dataset airports
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/airports> a dcat:Dataset ;
+    dcterms:title "Letiště z celého světa"@cs ;
+    dcterms:description "Dataset obsahuje přes 7k letišť po celém světě, u každého je uveden jeho mezinárodní icao identifikátor, GPS koordináty a město kterému slouží"@cs ;
+    dcat:keyword "letiště"@cs, "seznam"@cs,  "icao"@cs;
+    dcat:theme <http://publications.europa.eu/resource/authority/data-theme/TRAN> ; #?
+    dcterms:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/IRREG> ;
+    dcterms:publisher <https://martin.skalicky.cz/#me> ;
+    dcat:contactPoint [ a vcard:Organization ;
+            vcard:fn "Kontakt pro otevřená data"@cs ;
+            vcard:hasEmail <mailto:skalima7@fit.cvut.cz> ] ;
+    dcat:distribution <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/airports/distribution/1> .
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/airports/distribution/1> a dcat:Distribution ;
+    dcterms:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+    dcterms:title "Seznam letišť a jejich umístění v RDF Turtle"@cs,
+        "Airport list and location in RDF Turtle"@en ;
+    dcat:accessURL <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/-/raw/master/download/output/airports.ttl> ;
+    dcat:downloadURL <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/-/raw/master/download/output/airports.ttl> ;
+    dcat:mediaType <http://www.iana.org/assignments/media-types/text/turtle> ;
+    ns1:specifikace [ a ns1:Specifikace ;
+            ns1:autorské-dílo <https://data.gov.cz/podmínky-užití/neobsahuje-autorská-díla/> ;
+            ns1:databáze-chráněná-zvláštními-právy <https://data.gov.cz/podmínky-užití/není-chráněna-zvláštním-právem-pořizovatele-databáze/> ;
+            ns1:databáze-jako-autorské-dílo <https://data.gov.cz/podmínky-užití/není-autorskoprávně-chráněnou-databází/> ;
+            ns1:osobní-údaje <https://data.gov.cz/podmínky-užití/neobsahuje-osobní-údaje/> ] .
+
+
+#dataset cities
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities> a dcat:Dataset ;
+    dcterms:title "Seznam velkých měst po celém světě"@cs ;
+    dcterms:description "Tento číselník obsahuje velká mě po celém světě. Každé město obsahuje mimo jiné celosvětový CAO identifikátor a vazbu na zemi ve které se nachází."@cs ;
+    dcat:keyword "město"@cs, "číselník"@cs;
+    dcat:theme <http://publications.europa.eu/resource/authority/data-theme/TRAN> ; #?
+    dcterms:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/IRREG> ;
+    dcterms:publisher <https://martin.skalicky.cz/#me> ;
+    dcat:contactPoint [ a vcard:Organization ;
+            vcard:fn "Kontakt pro otevřená data"@cs ;
+            vcard:hasEmail <mailto:skalima7@fit.cvut.cz> ] ;
+    dcat:distribution <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/1>,
+        <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/2> .
+
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/1> a dcat:Distribution ;
+    dcterms:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+    dcterms:title "Seznam měst v RDF Turtle"@cs,
+        "City list in RDF Turtle"@en ;
+    dcat:accessURL <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/-/raw/master/download/output/cities.ttl> ;
+    dcat:downloadURL <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/-/raw/master/download/output/cities.ttl> ;
+    dcat:mediaType <http://www.iana.org/assignments/media-types/text/turtle> ;
+    ns1:specifikace [ a ns1:Specifikace ;
+            ns1:autorské-dílo <https://data.gov.cz/podmínky-užití/neobsahuje-autorská-díla/> ;
+            ns1:databáze-chráněná-zvláštními-právy <https://data.gov.cz/podmínky-užití/není-chráněna-zvláštním-právem-pořizovatele-databáze/> ;
+            ns1:databáze-jako-autorské-dílo <https://data.gov.cz/podmínky-užití/není-autorskoprávně-chráněnou-databází/> ;
+            ns1:osobní-údaje <https://data.gov.cz/podmínky-užití/neobsahuje-osobní-údaje/> ] .
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/2> a dcat:Distribution ;
+    dcterms:title "SPARQL Endpoint"@cs,
+        "SPARQL Endpoint"@en ;
+    dcat:accessService <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/2/přístupová-služba> ;
+    dcat:accessURL <https://martin.skalicky.cz/sparql> ;
+    ns1:specifikace [ a ns1:Specifikace ;
+            ns1:autorské-dílo <https://data.gov.cz/podmínky-užití/neobsahuje-autorská-díla/> ;
+            ns1:databáze-chráněná-zvláštními-právy <https://data.gov.cz/podmínky-užití/není-chráněna-zvláštním-právem-pořizovatele-databáze/> ;
+            ns1:databáze-jako-autorské-dílo <https://data.gov.cz/podmínky-užití/není-autorskoprávně-chráněnou-databází/> ;
+            ns1:osobní-údaje <https://data.gov.cz/podmínky-užití/neobsahuje-osobní-údaje/> ] .
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/2/přístupová-služba> a dcat:DataService ;
+    dcterms:title "SPARQL Endpoint"@cs,
+        "SPARQL Endpoint"@en ;
+    dcat:endpointDescription <https://martin.skalicky.cz/sparql> ;
+    dcat:endpointURL <https://martin.skalicky.cz/sparql> ;
+    dcat:servesDataset <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities> .
+
+# dataset flight_records
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records> a dcat:Dataset ;
+    dcterms:title "Záznamy zachycení lokace letadel"@cs ;
+    dcterms:description "Obsahuje záznamy o lokaci letadel. Jejich koordináty, registrační čísla, čísla linky, z jakého letiště odlétly a kam směřují."@cs ;
+    dcat:keyword "Záznamy letů"@cs, "flight records"@en;
+    dcat:theme <http://publications.europa.eu/resource/authority/data-theme/TRAN> ; #?
+    dcterms:accrualPeriodicity <http://publications.europa.eu/resource/authority/frequency/IRREG> ;
+    dcterms:publisher <https://martin.skalicky.cz/#me> ;
+    dcat:contactPoint [ a vcard:Organization ;
+            vcard:fn "Kontakt pro otevřená data"@cs ;
+            vcard:hasEmail <mailto:skalima7@fit.cvut.cz> ] ;
+    dcat:distribution <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records/distribution/1> .
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records/distribution/1> a dcat:Distribution ;
+    dcterms:title "SPARQL Endpoint pro záznamy lokací letadel"@cs,
+        "SPARQL Endpoint of flight records"@en ;
+    dcat:accessService <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records/distribution/1/přístupová-služba> ;
+    dcat:accessURL <https://martin.skalicky.cz/sparql> ;
+    ns1:specifikace [ a ns1:Specifikace ;
+            ns1:autorské-dílo <https://data.gov.cz/podmínky-užití/neobsahuje-autorská-díla/> ;
+            ns1:databáze-chráněná-zvláštními-právy <https://data.gov.cz/podmínky-užití/není-chráněna-zvláštním-právem-pořizovatele-databáze/> ;
+            ns1:databáze-jako-autorské-dílo <https://data.gov.cz/podmínky-užití/není-autorskoprávně-chráněnou-databází/> ;
+            ns1:osobní-údaje <https://data.gov.cz/podmínky-užití/neobsahuje-osobní-údaje/> ] .
+
+# Sparql endpoint will describe itself
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records/distribution/1/přístupová-služba> a dcat:DataService ;
+    dcterms:title "SPARQL Endpoint"@cs,
+        "SPARQL Endpoint"@en ;
+    dcat:endpointDescription <https://martin.skalicky.cz/sparql> ;
+    dcat:endpointURL <https://martin.skalicky.cz/sparql> ;
+    dcat:servesDataset <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/flight_records> .

@@ -1,0 +1,19 @@
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix my: <http://localhost/vocabulary/terms/> .
+@prefix : <#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+
+:Cities a void:Dataset .
+:FlightRecords a void:Dataset .
+
+:FlightRecords_Cities a void:Linkset;
+    void:objectsTarget :Cities;
+    void:subjectsTarget :FlightRecords;
+    void:linkPredicate my:flewOver
+    .
+
+<> a void:DatasetDescription;
+    dcterms:title "Propojení letových záznamů a měst zda nad nimi proletělo letadlo na základě GPS"@cs;
+    dcterms:creator <https://martin.skalicky.cz/#me>;
+    .

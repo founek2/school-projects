@@ -1,0 +1,69 @@
+<html lang="en">
+    <head></head>
+    <body
+        prefix="my: http://localhost/vocabulary/terms/ dc: http://purl.org/dc/terms/ xsd: http://www.w3.org/2001/XMLSchema# geo: http://www.w3.org/2003/01/geo/wgs84_pos# dbo: http://dbpedia.org/ontology/ dbp: http://dbpedia.org/property/ rdfs: http://www.w3.org/2000/01/rdf-schema#"
+    >
+        <div typeof="dbo:Airport geo:Point" about="http://airports.dev/resource/airport/AYGA">
+            <h2 property="rdfs:label" content="Goroka Airport">
+                <span property="dbp:name">Goroka Airport</span>
+            </h2>
+            <label>iata: </label><span property="dbo:iataLocationIdentifier" datatype="xsd:string">GKA</span><br />
+            <label>icao: </label><span property="dbo:icaoLocationIdentifier" datatype="xsd:string">AYGA</span>
+            <div rel="dbo:city">
+                Serve to cities:
+                <ul>
+                    <li about="http://airports.dev/resource/cities/papua_new_guinea_goroka" typeof="dbo:City">
+                        <span property="dbp:name">Goroka</span>
+                        <span property="rdfs:label" content="Goroka"></span>
+                        <span rel="dbp:country">
+                            <span about="http://airports.dev/resource/country/papua_new_guinea" typeof="dbo:Country">
+                                (country: <span property="dc:title">Papua New Guinea</span
+                                ><span property="rdfs:label" content="Papua New Guinea"></span>)
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                Location: <span property="geo:lat" datatype="xsd:decimal">-6.081689834590001</span>,
+                <span property="geo:long" datatype="xsd:decimal">145.391998291,5282</span> (lat, lng)
+                <span
+                    property="geo:long"
+                    content="Point(-6.081689834590001 145.391998291)"
+                    datatype="http://www.openlinksw.com/schemas/virtrdf#Geometry"
+                ></span>
+            </div>
+        </div>
+        <div typeof="dbo:Airport geo:Point" about="http://airports.dev/resource/airport/AYMD">
+            <h2 property="rdfs:label" content="Madang Airport">
+                <span property="dbp:name">Madang Airport</span>
+            </h2>
+            <label>iata: </label><span property="dbo:iataLocationIdentifier" datatype="xsd:string">MAG</span><br />
+            <label>icao: </label><span property="dbo:icaoLocationIdentifier" datatype="xsd:string">AYMD</span>
+            <div rel="dbo:city">
+                Serve to cities:
+                <ul>
+                    <li about="http://airports.dev/resource/cities/papua_new_guinea_madang" typeof="dbo:City">
+                        <span property="dbp:name">Madang</span>
+                        <span property="rdfs:label" content="Madang"></span>
+                        <span rel="dbp:country">
+                            <span about="http://airports.dev/resource/country/papua_new_guinea" typeof="dbo:Country">
+                                (country: <span property="dc:title">Papua New Guinea</span
+                                ><span property="rdfs:label" content="Papua New Guinea"></span>)
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                Location: <span property="geo:lat" datatype="xsd:decimal">-5.20707988739</span>,
+                <span property="geo:long" datatype="xsd:decimal">145.789001465</span> (lat, lng)
+                <span
+                    property="geo:long"
+                    content="POINT(-5.20707988739 145.789001465)"
+                    datatype="http://www.openlinksw.com/schemas/virtrdf#Geometry"
+                ></span>
+            </div>
+        </div>
+    </body>
+</html>

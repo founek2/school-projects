@@ -1,0 +1,9 @@
+Mozna umisteni:
+Pocet billboardu:
+Vzdalenost: 2
+Vzdalenost: 0
+Vzdalenost: inf
+Vzdalenost: 1
+N/A
+Vzdalenost: 2
+Vzdalenost: 0

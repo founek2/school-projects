@@ -1,0 +1,104 @@
+
+void smazatTest() {
+    CHolding aa;
+    unsigned id = 666;
+    assert( !aa . Remove( id ) && id == 666);
+    aa. Add( 5,5,5);
+    aa . Add( 6,6,6);
+    aa. Add( 7,7,7);
+    aa . Add( 8,8,8);
+    assert( aa . Remove( 5, id ) && id == 5);
+    aa . Add(8,2,2);
+    assert( aa . Remove( id ) && id == 2 );
+    aa . Add( 1,1,1);
+    assert( aa . Remove( id ) && id == 1);
+
+    CHolding a;
+    a . Add(10,10,10); //1
+    a . Add(10,10,10);//3
+    a . Add(10,10,10);//4
+    a . Add(10,10,10);//5
+    a . Add(10,10,10);//7
+    assert(a . Remove( id ) && id == 10);//1
+    a . Add(10,9,10);//2
+    assert( a . Remove( id ) && id == 9);//2
+    a . Add(10,9,11);//8
+    assert( a . Remove( 10, id ) && id == 10);//3
+    assert( a . Remove( id ) && id == 10);//4
+    a . Add(20, 5, 10);//6
+    assert( a . Remove ( id ) && id == 10);//5
+    assert( a . Remove( 20, id ) && id == 5);//6
+    a . Add( 20,20,20);//11
+    assert( a . Remove( id ) && id == 10);//7
+    a . Add( 20, 19, 20);//10
+    a . Add( 10, 20 , 20);//9
+    assert( a . Remove( id ) && id == 9);//8
+    assert( a . Remove(10, id ) && id == 20);//9
+    assert( a . Remove( id ) && id == 19);//10
+    assert( a . Remove( 20, id ) && id == 20);//11
+    assert( !a . Remove( id ) && id == 20);//xx
+
+    CHolding c3;
+    c3.Add(1, 1, 1);
+    c3.Add(1, 2, 1);
+    c3.Add(1, 3, 2);
+    res = c3.Remove(id);
+    assert(res && id == 1);
+    res = c3.Remove(id);
+    assert(res && id == 2);
+    res = c3.Remove(id);
+    assert(res && id == 3);
+    c3.Add(1, 1, 1);
+    c3.Add(1, 2, 1);
+    c3.Add(1, 3, 2);
+    c3.Add(2, 4, 1);
+    c3.Add(2, 5, 1);
+    c3.Add(2, 6, 2);
+    res = c3.Remove(id);
+    assert(res && id == 1);
+    res = c3.Remove(id);
+    assert(res && id == 2);
+    res = c3.Remove(id);
+    assert(res && id == 4);
+    res = c3.Remove(id);
+    assert(res && id == 5);
+    res = c3.Remove(id);
+    assert(res && id == 3);
+    res = c3.Remove(id);
+    assert(res && id == 6);
+
+    CHolding c2;
+    c2.Add(30, 80, 4);
+    c2.Add(30, 83, 3);
+    c2.Add(30, 82, 2);
+    c2.Add(30, 81, 1);
+    c2.Add(30, 181, 1);
+    c2.Add(20, 90, 4);
+    c2.Add(20, 93, 3);
+    c2.Add(20, 92, 2);
+    c2.Add(20, 291, 1);
+    c2.Add(20, 191, 1);
+//---
+    res = c2.Remove(id);
+    assert(res && id == 191);
+    res = c2.Remove(id);
+    assert(res && id == 291);
+    res = c2.Remove(id);
+    assert(res && id == 81);
+    res = c2.Remove(id);
+    assert(res && id == 181);
+    res = c2.Remove(id);
+    assert(res && id == 92);
+    res = c2.Remove(id);
+    assert(res && id == 82);
+    res = c2.Remove(id);
+    assert(res && id == 93);
+    res = c2.Remove(id);
+    assert(res && id == 83);
+    res = c2.Remove(id);
+    assert(res && id == 90);
+    res = c2.Remove(id);
+    assert(res && id == 80);
+    res = c2.Remove(id);
+    assert(!res && id == 80);
+}

@@ -1,0 +1,68 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://localhost/vocabulary/terms/>
+  dc:title "Flight records and airports: an RDF vocabulary" ;
+  dc:description """A vocabulary for representing airport identifier "iata", flight records with properties: callsign, number, registration, origin, destination, wasSpottedAt. Also some releations: flewOver and visited.
+        
+        Version 1.0
+        """ ;
+  dc:date "2022-12-16 13:48:30.000" ;
+  rdfs:label "my" .
+
+<http://localhost/vocabulary/terms/FlightRecord>
+  a rdfs:Class ;
+  rdfs:label "FlightRecord" ;
+  rdfs:comment "Record containing information like registration number for some flight." .
+
+<http://localhost/vocabulary/terms/callsign>
+  a rdf:Property ;
+  rdfs:domain <http://dbpedia.org/ontology/FlightRecord> ;
+  rdfs:label "Callsign" ;
+  rdfs:comment "Aviation call signs are communication call signs assigned as unique identifiers to aircraft." .
+
+<http://localhost/vocabulary/terms/number>
+  a rdf:Property ;
+  rdfs:domain <http://dbpedia.org/ontology/FlightRecord> ;
+  rdfs:label "Number" ;
+  rdfs:comment "Commercial flight number." .
+
+<http://localhost/vocabulary/terms/registration>
+  a rdf:Property ;
+  rdfs:domain <http://dbpedia.org/ontology/FlightRecord> ;
+  rdfs:label "Registration" ;
+  rdfs:comment "An aircraft registration is a code unique to a single aircraft, required by international convention to be marked on the exterior of every civil aircraft." .
+
+<http://localhost/vocabulary/terms/origin>
+  a rdf:Property ;
+  rdfs:domain <http://dbpedia.org/ontology/FlightRecord> ;
+  rdfs:label "Origin" ;
+  rdfs:comment "From which airport airplane went of." .
+
+<http://localhost/vocabulary/terms/destination>
+  a rdf:Property ;
+  rdfs:domain <http://dbpedia.org/ontology/FlightRecord> ;
+  rdfs:label "Destination" ;
+  rdfs:comment "To which airport is airplane headed." .
+
+<http://localhost/vocabulary/terms/wasSpottedAt>
+  a rdf:Property ;
+  rdfs:domain <http://dbpedia.org/ontology/FlightRecord> ;
+  rdfs:label "WasSpottedAt" ;
+  rdfs:comment "On which GPS coordinates has been airplane spotted." .
+
+<http://localhost/vocabulary/terms/icao24>
+  a rdf:Property ;
+  rdfs:domain <http://dbpedia.org/ontology/FlightRecord> ;
+  rdfs:label "ICAO24" ;
+  rdfs:comment """Each transponder is linked to a unique 24-bit code assigned by ICAO. 
+        The 24-bit address is used primarily in the low-level radio protocol between the surveillance radar 
+        and the transponder. The stationary radar encodes this address in its radio ping to specify that it 
+        wants a reply from that particular transponder, and all other transponders in the air will then not 
+        flood the downlink frequency with replies of their own.""" .
+
+<http://localhost/vocabulary/terms/flewOver>
+  a rdf:Property ;
+  rdfs:label "FlewOver" ;
+  rdfs:comment "To which airport is airplane headed." .

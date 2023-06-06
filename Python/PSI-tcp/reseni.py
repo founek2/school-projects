@@ -1,0 +1,521 @@
+import re
+import logging
+from collections import namedtuple
+
+IP_ADDR = '127.0.0.1'
+PORT = 8181
+
+# in seconds
+TIMEOUT = 1
+TIMEOUT_RECHARGING = 5
+
+SERVER_KEY = 54621
+CLIENT_KEY = 45328
+
+Position = namedtuple('Position', 'x y')
+Recharge = namedtuple('Recharge', 'state timestamp')
+
+COMMANDS = {
+    'SERVER_CONFIRMATION': "",
+    'SERVER_MOVE': '102 MOVE\a\b',
+    'SERVER_TURN_LEFT': '103 TURN LEFT\a\b',
+    'SERVER_TURN_RIGHT': '104 TURN RIGHT\a\b',
+    'SERVER_PICK_UP': '105 GET MESSAGE\a\b',
+    'SERVER_LOGOUT': '106 LOGOUT\a\b',
+    'SERVER_OK': '200 OK\a\b',
+    'SERVER_LOGIN_FAILED': '300 LOGIN FAILED\a\b',
+    'SERVER_SYNTAX_ERROR': '301 SYNTAX ERROR\a\b',
+    'SERVER_LOGIC_ERROR': '302 LOGIC ERROR\a\b',
+}
+
+CLIENT_AUTH = {
+    'CLIENT_USERNAME': lambda text: len(text) <= 12 and re.match('^((?!\a\b).)*\a\b$', text),
+    'CLIENT_CONFIRMATION': lambda text: len(text) <= 7 and re.match('^[0-9]*\a\b$', text) and int(
+        get_msg(text)) < 65535,
+}
+CLIENT = {
+    'CLIENT_OK': lambda text: len(text) <= 12 and re.match('^OK -?(0|[1-9][0-9]*) -?(0|[1-9][0-9]*)\a\b$', text),
+    'CLIENT_RECHARGING': lambda text: text == "RECHARGING\a\b",
+    'CLIENT_FULL_POWER': lambda text: text == 'FULL POWER\a\b',
+    'CLIENT_MESSAGE': lambda text: len(text) <= 100 and re.match('^((?!\a\b).)*\a\b$', text)
+}
+
+
+def client_username_v(text: str):
+    return len(text) <= 10 or (len(text) == 11 and text.endswith("\a"))
+
+
+def client_conf_v(text: str):
+    return re.match("^[0-9]+\a?$", text) and (
+            len(text) <= 5 or (len(text) == 6 and text.endswith("\a"))
+    ) and int(re.search("^[0-9]+", text).group()) < 65535
+
+
+def client_ok_v(text: str):
+    return text.startswith("O") and (
+            len(text) <= 10 or (len(text) == 11 and text.endswith("\a"))
+    )
+
+
+def client_recharging(text: str):
+    return text.startswith("R") and (len(text) <= len("RECHARGING") or text == "RECHARGING\a")
+
+
+def client_full_power(text: str):
+    return text.startswith("F") and (len(text) <= len("FULL POWER") or text == "FULL POWER\a")
+
+
+def client_message(text: str):
+    return len(text) <= 98 or (len(text) == 99 and text.endswith("\a"))
+
+
+VALIDATIONS_AUTH = {
+    "CLIENT_USERNAME": client_username_v,
+    "CLIENT_CONFIRMATION": client_conf_v,
+}
+
+VALIDATIONS = {
+    "CLIENT_OK": client_ok_v,
+    "CLIENT_RECHARGING": client_recharging,
+    "CLIENT_FULL_POWER": client_full_power,
+    "CLIENT_MESSAGE": client_message
+}
+
+
+def get_msg(data: str):
+    return data.split("\a\b")[0]
+
+
+def calc_hash(text, key):
+    values = [ord(c) for c in text]
+    hash_name = (sum(values) * 1000) % 65536
+    return (hash_name + key) % 65536
+
+
+def get_position(data):
+    msg = get_msg(data).split(" ")
+    return Position(int(msg[1]), int(msg[2]))
+
+
+"""
+    directions
+    x 0 x
+    3 T 1
+    x 2 x
+"""
+
+
+def get_next_move(position: Position, direction):
+    """
+    It have turn optimizations - instead of always turning to same side - it decide which turn to use for best outcome
+    –> minimal movements
+    """
+    if direction is None:
+        return COMMANDS["SERVER_MOVE"], None
+
+    x, y = position
+
+    if x > -2:
+        if direction == 3:
+            return COMMANDS["SERVER_MOVE"], direction
+        elif direction == 0:  # nahoru
+            return COMMANDS["SERVER_TURN_LEFT"], 3
+        else:
+            return COMMANDS["SERVER_TURN_RIGHT"], direction + 1
+    elif x < -2:
+        if direction == 1:
+            return COMMANDS["SERVER_MOVE"], direction
+        elif direction == 0:  # nahoru
+            return COMMANDS["SERVER_TURN_RIGHT"], 1
+        else:
+            return COMMANDS["SERVER_TURN_LEFT"], direction - 1
+
+    logging.debug("Y")
+    if y < -2:
+        if direction == 0:
+            return COMMANDS["SERVER_MOVE"], direction
+        elif direction == 3:  # vlevo
+            return COMMANDS["SERVER_TURN_RIGHT"], 0
+        else:
+            return COMMANDS["SERVER_TURN_LEFT"], direction - 1
+    elif y > -2:
+        if direction == 2:
+            return COMMANDS["SERVER_MOVE"], direction
+        elif direction == 3:  # vlevo
+            return COMMANDS["SERVER_TURN_LEFT"], 2
+        else:
+            return COMMANDS["SERVER_TURN_RIGHT"], direction + 1
+
+    return COMMANDS["SERVER_PICK_UP"], direction
+
+
+def get_direction(pos1: Position, pos2: Position, direction):
+    x1, y1 = pos1
+    x2, y2 = pos2
+
+    if x1 is None:
+        return direction
+
+    if x1 == x2 and y1 != y2:
+        # 1 > 2 -> 0
+        # -2 > -3 -> 2
+        return 2 if y1 > y2 else 0
+    elif x1 != x2 and y1 == y2:
+        # 2 > 3 -> 1
+        # -2 > -3 -> 3
+        return 3 if x1 > x2 else 1
+
+    # x1 == x2 and y1 == y2
+    return direction
+
+
+def pick_finding_position(position, direction):
+    """
+    Y - start position (-2, -2)
+        x x x x x
+        x x x x x
+        9 x x x x
+        8 7 6 5 4
+        Y 0 1 2 3
+    """
+    x, y = position
+
+    if y == -2 or y == 0 or y == 2:
+        if x < 2:
+            if direction == 1:
+                return COMMANDS["SERVER_MOVE"], direction
+            else:
+                return COMMANDS["SERVER_TURN_LEFT"], to_left(direction)
+
+        if direction == 0:
+            return COMMANDS["SERVER_MOVE"], direction
+        else:
+            return COMMANDS["SERVER_TURN_LEFT"], to_left(direction)
+
+    if y == -1 or y == 1:
+        if x > -2:
+            if direction == 3:
+                return COMMANDS["SERVER_MOVE"], direction
+            else:
+                return COMMANDS["SERVER_TURN_LEFT"], to_left(direction)
+
+        if direction == 0:
+            return COMMANDS["SERVER_MOVE"], direction
+        else:
+            return COMMANDS["SERVER_TURN_LEFT"], to_left(direction)
+
+    raise Exception("already searched whole area")
+
+
+def to_left(direction):
+    return 3 if direction == 0 else direction - 1
+import asyncio
+from common import *
+import time
+from signal import SIGINT, SIGTERM
+
+import logging
+
+logging.basicConfig(filename='server2.log', level=logging.INFO)
+
+
+WHOLE_MESSAGES_REGEX = "(?:(?<=\a\b)|(?<=^)).*?\a\b"
+PARTIAL_MESSAGE_REGEX = "(?:(?<=\a\b)|(?<=^))((?!\a\b).)+?$"
+CONTAINS_RECHARGING_REGEX = "(?:(?<=\a\b)|(?<=^))RECHARGING\a\b"
+
+class EchoServerProtocol(asyncio.Protocol):
+    authenticated = False
+    auth_command = "CLIENT_USERNAME"
+    user_name = ""
+    position = Position(None, None)
+    direction = None
+    recharging = Recharge(False, 0)
+    will_recharge = True
+    finding_message = False
+    buffer = ""
+    send_buffer = []
+    last_message = 0
+
+    def connection_made(self, transport):
+        peername = transport.get_extra_info('peername')
+        print('Connection from {}'.format(peername))
+        self.transport = transport
+
+    def data_received(self, raw):
+        self.last_message = time.time()
+        asyncio.get_running_loop().create_task(self.timeout())
+
+        data = self.buffer + raw.decode("ascii")
+
+        print("recv:", raw)
+
+        queue = re.findall(WHOLE_MESSAGES_REGEX, data)
+        partial = re.search(PARTIAL_MESSAGE_REGEX, data)
+        self.buffer = ""
+        self.will_recharge = bool(re.search(CONTAINS_RECHARGING_REGEX, data))
+        for msg in queue:
+            print("msg", msg.encode('ascii'))
+            self.process_message(msg)
+
+        if partial is not None:
+            print("partial", partial.group())
+            self.should_add_to_buffer(partial.group())
+
+        self.will_recharge = False
+
+    def process_message(self, data):
+        if self.recharging.state and not CLIENT["CLIENT_FULL_POWER"](data):
+            return self.logic_error()
+
+        if CLIENT["CLIENT_RECHARGING"](data) and not self.recharging.state:
+            self.recharging = Recharge(True, time.time())
+            return asyncio.get_running_loop().create_task(self.timeout_recharging())
+
+        elif CLIENT["CLIENT_FULL_POWER"](data):
+            self.recharging = Recharge(False, 0)
+            return self.flush_send_buffer()
+
+        if not self.authenticated:
+            return self.process_authentication(data)
+
+        # Authenticated
+        if self.finding_message and CLIENT["CLIENT_OK"](data):
+            new_pos = get_position(data)
+            print("new pos1", new_pos)
+            self.position = new_pos
+
+            return self.send_str(COMMANDS["SERVER_PICK_UP"])
+        elif CLIENT["CLIENT_OK"](data):
+            new_pos = get_position(data)
+
+            self.direction = get_direction(self.position, new_pos, self.direction)
+            print("new pos2", new_pos)
+
+            logging.debug(data)
+            self.position = new_pos
+            return self.make_move()
+        elif self.finding_message and CLIENT["CLIENT_MESSAGE"](data):
+            if data != "\a\b":
+                print("found message", data)
+                logging.info("message: " + data)
+                self.send_str(COMMANDS["SERVER_LOGOUT"])
+                return self.close()
+            else:
+                cmd, direction = pick_finding_position(self.position, self.direction)
+                self.direction = direction
+                return self.send_str(cmd)
+
+        return self.syntax_error()
+
+    def make_move(self):
+        cmd, new_direction = get_next_move(self.position, self.direction)
+        logging.debug("pos " + str(self.position.x) + " " + str(self.position.y) + " dir: " + str(
+            self.direction) + " new dir: " + str(new_direction) + " cmd " + cmd)
+        self.direction = new_direction
+        if cmd == COMMANDS["SERVER_PICK_UP"]:
+            self.finding_message = True
+
+        return self.send_str(cmd)
+
+    async def timeout_recharging(self):
+        await asyncio.sleep(TIMEOUT_RECHARGING)
+        state, timestamp = self.recharging
+        if state and time.time() - timestamp > TIMEOUT_RECHARGING:
+            return self.close()
+
+    async def timeout(self):
+        await asyncio.sleep(TIMEOUT)
+        state, _ = self.recharging
+
+        if not state and time.time() - self.last_message > TIMEOUT and not self.transport.is_closing():
+            print("timeout closing")
+            return self.close()
+
+    def add_to_buffer(self, text):
+        self.buffer = text
+
+    def should_add_to_buffer(self, text):
+        if VALIDATIONS["CLIENT_RECHARGING"](text):
+            return self.add_to_buffer(text)
+        if VALIDATIONS["CLIENT_FULL_POWER"](text):
+            return self.add_to_buffer(text)
+
+        if not self.authenticated:
+            if self.auth_command == "CLIENT_USERNAME":
+                if VALIDATIONS_AUTH["CLIENT_USERNAME"](text):
+                    return self.add_to_buffer(text)
+                else:
+                    return self.syntax_error()
+
+            elif self.auth_command == "CLIENT_CONFIRMATION":
+                if VALIDATIONS_AUTH["CLIENT_CONFIRMATION"](text):
+                    return self.add_to_buffer(text)
+                else:
+                    return self.syntax_error()
+
+        if self.finding_message:
+            if VALIDATIONS["CLIENT_MESSAGE"](text):
+                return self.add_to_buffer(text)
+
+        if VALIDATIONS["CLIENT_OK"](text):
+            return self.add_to_buffer(text)
+
+        return self.syntax_error()
+
+    def process_authentication(self, data):
+        print(self.auth_command)
+        if not CLIENT_AUTH[self.auth_command](data):
+            return self.syntax_error()
+
+        if self.auth_command == "CLIENT_USERNAME":
+            logging.info("username: " + data)
+            code = self.auth_username(data)
+            self.auth_command = "CLIENT_CONFIRMATION"
+            return self.send_str(COMMANDS["SERVER_CONFIRMATION"] + str(code) + "\a\b")
+        elif self.auth_command == "CLIENT_CONFIRMATION":
+            if self.auth_confirm(data):
+                self.send_str(COMMANDS["SERVER_OK"])
+                self.authenticated = True
+                return self.make_move()
+            else:
+                return self.error_login()
+
+        self.syntax_error()
+
+    def error_login(self):
+        self.send_str(COMMANDS["SERVER_LOGIN_FAILED"])
+        self.transport.close()
+
+    def logic_error(self):
+        self.send_str(COMMANDS["SERVER_LOGIC_ERROR"])
+        self.transport.close()
+
+    def syntax_error(self):
+        self.send_str(COMMANDS["SERVER_SYNTAX_ERROR"])
+        self.transport.close()
+
+    def send_str(self, text):
+        if self.will_recharge:
+            self.send_buffer.append(text)
+        else:
+            to_send = ("".join(self.send_buffer) + text).encode("ascii")
+            self.send_buffer.clear()
+            logging.info("sending " + to_send.decode("ascii"))
+            print("sending", to_send)
+            self.transport.write(to_send)
+
+    def flush_send_buffer(self):
+        if self.send_buffer:
+            self.send_str("")
+
+    def auth_username(self, data):
+        msg = get_msg(data)
+        self.user_name = msg
+        return calc_hash(msg, SERVER_KEY)
+
+    def auth_confirm(self, data):
+        msg = get_msg(data)
+        code = calc_hash(self.user_name, CLIENT_KEY)
+        return code == int(msg)
+
+    def close(self):
+        print("closing connection")
+        self.transport.close()
+
+
+async def main():
+    # Get a reference to the event loop as we plan to use
+    # low-level APIs.
+    loop = asyncio.get_running_loop()
+
+    server = await loop.create_server(
+        lambda: EchoServerProtocol(),
+        IP_ADDR, PORT)
+
+    async with server:
+        print(f"Started server on ip={IP_ADDR} port={PORT}")
+        await server.serve_forever()
+
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+
+    main_task = asyncio.ensure_future(main())
+    loop.add_signal_handler(SIGINT, main_task.cancel)
+    loop.add_signal_handler(SIGTERM, main_task.cancel)
+    try:
+        loop.run_until_complete(main_task)
+    except asyncio.CancelledError:
+        print("Stopped")
+    finally:
+        loop.close()
+from common import *
+
+
+def test_direction():
+    assert get_direction((3, 3), (3, 4), None) == 0
+    assert get_direction((-2, 3), (-3, 3), None) == 3
+    assert get_direction((2, 3), (1, 3), None) == 3
+    assert get_direction((0, 3), (1, 3), None) == 1
+    assert get_direction((0, 3), (0, 2), None) == 2
+    assert get_direction((0, -3), (0, -2), None) == 0
+    assert get_direction((3, 4), (3, 4), None) is None
+
+
+def test_position():
+    assert get_position("OK 0 1\a\b") == (0, 1)
+    assert get_position("OK -10 15\a\b") == (-10, 15)
+    assert get_position("OK -10 -15\a\b") == (-10, -15)
+
+
+def test_next_move():
+    assert get_next_move((10, 0), None) == (COMMANDS["SERVER_MOVE"], None)
+    assert get_next_move((-2, -1), 2) != (COMMANDS["SERVER_PICK_UP"], 2)
+    assert get_next_move((-2, -2), 2) == (COMMANDS["SERVER_PICK_UP"], 2)
+
+    assert get_next_move((20, -2), 1) == (COMMANDS["SERVER_TURN_LEFT"], 0) \
+           or get_next_move((20, -2), 1) == (COMMANDS["SERVER_TURN_RIGHT"], 2)
+    assert get_next_move((-20, -2), 3) == (COMMANDS["SERVER_TURN_LEFT"], 2) \
+           or get_next_move((-20, -2), 3) == (COMMANDS["SERVER_TURN_RIGHT"], 0)
+    assert get_next_move((20, -2), 2) == (COMMANDS["SERVER_TURN_RIGHT"], 3)
+    assert get_next_move((20, -2), 0) == (COMMANDS["SERVER_TURN_LEFT"], 3)
+    assert get_next_move((-1, -2), 3) == (COMMANDS["SERVER_MOVE"], 3)
+    assert get_next_move((-20, -2), 1) == (COMMANDS["SERVER_MOVE"], 1)
+
+    assert get_next_move((-2, -10), 2) == (COMMANDS["SERVER_TURN_LEFT"], 1) \
+           or get_next_move((-2, -10), 2) == (COMMANDS["SERVER_TURN_RIGHT"], 3)
+    assert get_next_move((-2, 12), 0) == (COMMANDS["SERVER_TURN_LEFT"], 3) \
+           or get_next_move((-2, 12), 0) == (COMMANDS["SERVER_TURN_RIGHT"], 1)
+    assert get_next_move((-2, -1), 1) == (COMMANDS["SERVER_TURN_RIGHT"], 2)
+    assert get_next_move((-2, 32), 3) == (COMMANDS["SERVER_TURN_LEFT"], 2)
+    assert get_next_move((-2, -11), 0) == (COMMANDS["SERVER_MOVE"], 0)
+    assert get_next_move((-2, 20), 2) == (COMMANDS["SERVER_MOVE"], 2)
+
+    assert get_next_move((-1, 11), 0) == (COMMANDS["SERVER_TURN_LEFT"], 3)
+
+
+def test_calc_hash():
+    assert calc_hash("Mnau!", 54621) == 29869
+    assert calc_hash("Mnau!", 54622) != 29869
+
+
+def test_pick_finding_position():
+    assert pick_finding_position((-2, -2), 1) == (COMMANDS["SERVER_MOVE"], 1)
+    assert pick_finding_position((1, -2), 1) == (COMMANDS["SERVER_MOVE"], 1)
+    assert pick_finding_position((2, -2), 1) == (COMMANDS["SERVER_TURN_LEFT"], 0)
+
+    assert pick_finding_position((2, -1), 3) == (COMMANDS["SERVER_MOVE"], 3)
+    assert pick_finding_position((0, -1), 3) == (COMMANDS["SERVER_MOVE"], 3)
+    assert pick_finding_position((-1, -1), 3) == (COMMANDS["SERVER_MOVE"], 3)
+    assert pick_finding_position((-2, -1), 3) == (COMMANDS["SERVER_TURN_LEFT"], 2)
+    assert pick_finding_position((-2, -1), 1) == (COMMANDS["SERVER_TURN_LEFT"], 0)
+
+    assert pick_finding_position((-2, -1), 0) == (COMMANDS["SERVER_MOVE"], 0)
+    assert pick_finding_position((-2, 0), 0) == (COMMANDS["SERVER_TURN_LEFT"], 3)
+
+
+def test_to_left():
+    assert to_left(3) == 2
+    assert to_left(0) == 3
+    assert to_left(1) == 0
+    assert to_left(2) == 1

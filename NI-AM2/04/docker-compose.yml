@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --loglevel warning
+
+  client:
+    build: "./client"
+    environment:
+      - REDIS_URL=redis://cache:6379
+  
+  server:
+    build: "./server"
+    environment:
+      - REDIS_URL=redis://cache:6379
+    ports:
+      - 8080:8080

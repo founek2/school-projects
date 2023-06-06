@@ -1,0 +1,40 @@
+@prefix dbo:  <http://dbpedia.org/ontology/> .
+@prefix geo:  <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix dbp:  <http://dbpedia.org/property/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix location:  <http://flightrecords.dev/resource/location/> .
+@prefix my:  <http://localhost/vocabulary/terms/> .
+@prefix airport:  <http://flightrecords.dev/resource/airport/> .
+@prefix flightrecord:  <http://flightrecords.dev/resource/flightrecord/> .
+
+flightrecord:HBAL102  rdf:type      my:FlightRecord ;
+        my:icao24                   "a21c0f" ;
+        my:callsign                 "HBAL102" ;
+        my:wasSpottedAt             location:1 .
+
+location:1  rdf:type  geo:Point ;
+        geo:location  "POINT(-4.821135957362288 -76.31936961206897)"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry> ;
+        geo:lat       -4.821135957362288 ;
+        geo:long      -76.31936961206897 ;
+        geo:alt       18288.0 .
+
+flightrecord:AUA1028  rdf:type      my:FlightRecord ;
+        dbo:icao24                  "440081" ;
+        my:callsign                 "AUA1028" ;
+        my:registration             "OE-LPD" ;
+        my:origin                   airport:YSSY ;
+        my:destination              airport:LOWW ;
+        my:wasSpottedAt             location:2 .
+
+airport:YSSY  rdf:type              dbo:Airport ;
+        dbo:icaoLocationIdentifier  "YSSY" .
+
+airport:LOWW  rdf:type              dbo:Airport ;
+        dbo:icaoLocationIdentifier  "LOWW" .
+
+location:2  rdf:type  geo:Point ;
+        geo:location  "POINT(-33.96348856263245 151.18062973022458)"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry> ;
+        geo:lat       -33.96348856263245 ;
+        geo:long      151.18062973022458 ;
+        geo:alt       0.0 .

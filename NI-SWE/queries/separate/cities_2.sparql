@@ -1,0 +1,15 @@
+# Find out all countries starting with letter `S` and count how many cities they have, order result by country name 
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+
+SELECT ?countryTitle (count(?city) as ?numOfCities)
+WHERE {
+  GRAPH <http://192.168.10.219:9040/ni-swe2/data/cities> {
+  	?city a dbo:City .
+    ?city dbp:country ? ?country .
+    ?country dbp:name ?countryTitle
+    
+  }
+  
+  FILTER (strstarts(str(?countryTitle), 'S'))
+} GROUP BY ?countryTitle  ORDER BY ?country

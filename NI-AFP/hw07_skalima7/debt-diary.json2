@@ -1,0 +1,29 @@
+{
+    "note": "This is my example debt diary that you can use for testing...",
+    "records": [
+        {
+            "person": "Peter Pan",
+            "amount": 100,
+            "note": null,
+            "timestamp": "2021-03-25T17:46:52Z"
+        },
+        {
+            "person": "Luke Skywalker",
+            "amount": 10500,
+            "note": "For his new lightsaber",
+            "timestamp": "2022-01-25T08:15:00Z"
+        },
+        {
+            "person": "007",
+            "amount": -500,
+            "note": "He won in casino and lent me something of it",
+            "timestamp": "2022-03-25T11:46:33Z"
+        },
+        {
+            "person": "Peter Pan",
+            "amount": -50,
+            "note": "Finally something back, no money for him... never again!",
+            "timestamp": "2022-03-26T15:05:25Z"
+        }
+    ]
+}

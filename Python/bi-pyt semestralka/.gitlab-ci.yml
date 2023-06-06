@@ -1,0 +1,12 @@
+image: python:3
+
+stages:
+  - test
+
+test-homework01:
+  stage: test
+  script:
+    - pytest
+
+before_script:
+  - pip install -r requirements.txt

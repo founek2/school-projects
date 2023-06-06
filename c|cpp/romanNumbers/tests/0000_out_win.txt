@@ -1,0 +1,14 @@
+Sekvence:
+Operace:
+> 9 = I+I+IV+I+I+I
+> 9 = I+I+IV+I+II
+> 9 = I+I+IV+II+I
+> 9 = I+I+IV+III
+> 9 = II+IV+I+I+I
+> 9 = II+IV+I+II
+> 9 = II+IV+II+I
+> 9 = II+IV+III
+9: 8
+11: 32
+10: 0
+10: 0

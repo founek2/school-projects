@@ -1,0 +1,193 @@
+import asyncio
+import argparse
+from common import *
+
+parser = argparse.ArgumentParser(description='Download photo or upload firmware using UDP connection')
+parser.add_argument('server_ip', type=is_ip_addr,
+                    help='IP of server for UDP connection')
+parser.add_argument('firmware_path', nargs="?",
+                    type=check_file_exists,
+                    help='Path to new firmware for upload')
+
+
+def sort_seq(data: Packet):
+    return data.seq
+
+
+class DataStore():
+    def __init__(self):
+        self.ptr = 0  # ack
+        self.buffer = []
+        self.buffer2 = []
+        self.first = True
+        self.data = bytearray()
+        self.overflow = 0
+
+    def add(self, packet: Packet):
+        if (packet.seq < self.ptr and self.ptr - packet.seq < WINDOW_WIDTH * 3) or(
+            packet.seq > self.ptr + WINDOW_WIDTH * 3):  # already have it!
+            return self.ptr
+
+        if self.overflow == 0 and self.ptr > WINDOW_WIDTH * 3 >= packet.seq:
+            self.overflow = 1
+
+        use_buf_2 = self.overflow == 1 and packet.seq < WINDOW_WIDTH * 3
+
+        # Projit pole a podívat se jestli to mám
+        for pac in reversed(self.buffer2 if use_buf_2 else self.buffer):   # TODO hledat ve správném bufferu
+            if pac.seq > pac.seq:
+                break
+            if pac.seq == packet.seq:
+                return self.ptr
+
+        if use_buf_2:
+            self.buffer2.append(packet)
+            self.buffer2.sort(key=sort_seq, reverse=True)
+            print("buff2", packet.seq)
+            return self.ptr
+
+        print("buff1", packet.seq)
+        self.buffer.append(packet)
+        self.buffer.sort(key=sort_seq, reverse=True)
+
+        while self.buffer and len(self.data) % 65536 == self.buffer[-1].seq:
+            d = self.buffer.pop()
+            self.data.extend(d.data)
+
+        self.ptr = len(self.data) % 65536
+
+        if self.overflow and self.ptr <= 255:
+            print("OVERlaps")
+            self.overflow = 0
+            print("seq2 last: ", self.buffer2[0].seq, self.buffer2[-1].seq)
+
+            self.buffer = self.buffer2
+            self.buffer2 = []
+            # look into buffer
+            print("seq last: ", self.buffer[0].seq, self.buffer[-1].seq)
+            while self.buffer and len(self.data) % 65536 == self.buffer[-1].seq:
+                d = self.buffer.pop()
+                self.data.extend(d.data)
+
+            self.ptr = len(self.data) % 65536
+
+        return self.ptr
+
+
+class EchoClientProtocol():
+    def __init__(self, on_con_lost):
+        self.on_con_lost = on_con_lost
+        self.in_sync = True
+        self.transport = None
+        self.store = DataStore()
+
+    def connection_made(self, transport):
+        print("connected")
+        self.transport = transport
+        self.send_sync()
+
+    def datagram_received(self, data: bytes,
+                          addr):  # TODO check 20x po sobě odeslaný packet se stejným seq. číslem včetně FIN
+        # print('Data received: ', to_bin(data))
+        packet = Packet.from_bytes(data)
+        id, seq, ack, meta, data = packet.attributes()
+
+
+        print(f"id={id} seq={seq} ack={ack} meta={bin(meta)} data={len(data)}")
+
+        if not self.in_sync and self.id != id:
+            return
+
+
+        if not is_valid_meta(meta) or not is_valid_id(id) or (is_FIN(meta) and len(data) > 0):
+            print("invalid")
+            return self.reset()
+
+        # checking - invalid seq, FIN but contains DATA -> RST
+        if is_RST(meta):
+            print("DEBUG>")
+            for item in self.store.buffer:
+                print(item)
+            print("")
+            print("BUFFER 2>")
+            for item in self.store.buffer2:
+                print(item)
+            print("")
+            print("Received RST -> closing")
+            self.transport.close()
+            return
+
+        if self.in_sync is True:
+            if is_SYN(meta):
+                if not is_valid_cmd(data):
+                    return self.reset()
+
+                print("Received SYN")
+                self.id = id
+                self.seq = seq
+                self.in_sync = False
+            return
+
+        if is_FIN(meta):
+            # send FIN
+            self.send(Packet(id, seq, ack, FIN, bytes()))
+            print("BUFFER> ", self.store.buffer, "\n")
+            print("DATA> ", self.store.data)
+            print("Received FIN -> closing")
+            self.transport.close()
+            return
+
+        conf_seq = self.store.add(packet)
+
+        self.send(Packet(id, 0, conf_seq, 0, bytes()))
+
+    async def timeout_sync(self):
+        await asyncio.sleep(SYN_TIMEOUT)
+        if self.in_sync is True:
+            self.send_sync()
+
+    def send_sync(self):
+        print("sending SYNC")
+        self.send(Packet(0, 0, 0, SYN, CMD_DOWNLOAD_IMAGE))
+        asyncio.get_running_loop().create_task(self.timeout_sync())
+
+    def connection_lost(self, exc):
+        print('The server closed the connection')
+        self.on_con_lost.set_result(True)
+
+    def reset(self):
+        self.send(Packet(0, 0, 0, RST, bytes()))
+        print("Calling RST -> closing")
+        self.transport.close()
+
+    def error_received(self, exc):
+        print('Error received:', exc)
+
+    def send(self, packet: Packet):
+        print("sending", packet)
+        self.transport.sendto(packet.to_bytes())
+
+
+async def main(ip_addr, port):
+    # Get a reference to the event loop as we plan to use
+    # low-level APIs.
+    loop = asyncio.get_running_loop()
+
+    on_con_lost = loop.create_future()
+
+    transport, protocol = await loop.create_datagram_endpoint(
+        lambda: EchoClientProtocol(on_con_lost),
+        remote_addr=(ip_addr, port))
+
+    # Wait until the protocol signals that the connection
+    # is lost and close the transport.
+    try:
+        await on_con_lost
+    finally:
+        transport.close()
+
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    print(args.server_ip)
+    asyncio.run(main(args.server_ip, 4000))

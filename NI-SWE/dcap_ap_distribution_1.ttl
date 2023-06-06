@@ -1,0 +1,22 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ns1: <https://data.gov.cz/slovník/podmínky-užití/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/output/cities/distribution/1> a dcat:Distribution ;
+    dcterms:format <http://publications.europa.eu/resource/authority/file-type/RDF_TURTLE> ;
+    dcterms:title "Seznam měst v RDF Turtle"@cs,
+        "City list in RDF Turtle"@en ;
+    dcat:accessURL <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/-/raw/master/download/output/cities.ttl> ;
+    dcat:downloadURL <https://gitlab.fit.cvut.cz/NI-SWE/B221/cs/skalima7/-/raw/master/download/output/cities.ttl> ;
+    dcat:mediaType <http://www.iana.org/assignments/media-types/text/turtle> ;
+    ns1:specifikace [ a ns1:Specifikace ;
+            ns1:autorské-dílo <https://data.gov.cz/podmínky-užití/neobsahuje-autorská-díla/> ;
+            ns1:databáze-chráněná-zvláštními-právy <https://data.gov.cz/podmínky-užití/není-chráněna-zvláštním-právem-pořizovatele-databáze/> ;
+            ns1:databáze-jako-autorské-dílo <https://data.gov.cz/podmínky-užití/není-autorskoprávně-chráněnou-databází/> ;
+            ns1:osobní-údaje <https://data.gov.cz/podmínky-užití/neobsahuje-osobní-údaje/> ] .

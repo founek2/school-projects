@@ -1,0 +1,10 @@
+{
+  "name": "06",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Martin Skalický",
+  "license": "MIT",
+  "dependencies": {
+    "mime": "^3.0.0"
+  }
+}

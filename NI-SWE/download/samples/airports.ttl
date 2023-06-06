@@ -1,0 +1,47 @@
+@prefix dbo:  <http://dbpedia.org/ontology/> .
+@prefix geo:  <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix country:  <http://airports.dev/resource/country/> .
+@prefix dbp:  <http://dbpedia.org/property/> .
+@prefix city:  <http://airports.dev/resource/city/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix location:  <http://airports.dev/resource/location/> .
+@prefix airport:  <http://airports.dev/resource/airport/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+airport:AYGA  a                     dbo:Airport, geo:Point ;
+        rdfs:label                  "Goroka Airport"@en ;
+        dbp:name                    "Goroka Airport"@en ;
+        geo:location                "POINT(-6.081689834590001 145.391998291)"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry> ;
+        geo:lat                     -6.081689834590001 ;
+        geo:long                    145.391998291 ;
+        dbo:icaoLocationIdentifier  "AYGA" ;
+        dbo:iataLocationIdentifier  "GKA" ;
+        dbo:city                    city:papua_new_guinea_goroka .
+
+city:papua_new_guinea_goroka
+        rdf:type     dbo:City ;
+        rdfs:label    "Goroka"@en ;
+        dbp:name      "Goroka"@en ;
+        dbp:country  country:papua_new_guinea .
+
+country:papua_new_guinea
+        rdf:type  dbo:Country ;
+        rdfs:label  "Papua New Guinea"@en ;
+        dbp:name "Papua New Guinea"@en .
+
+airport:AYMD  rdf:type              dbo:Airport, geo:Point ;
+        rdfs:label                  "Madang Airport"@en ;
+        dbp:name                    "Madang Airport"@en ;
+        geo:location                "POINT(-5.20707988739 145.789001465)"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry> ;
+        geo:lat                     -5.20707988739 ;
+        geo:long                    145.789001465 ;
+        dbo:icaoLocationIdentifier  "AYMD" ;
+        dbo:iataLocationIdentifier  "MAG" ;
+        dbo:city                  city:papua_new_guinea_madang .
+
+city:papua_new_guinea_madang
+        rdf:type     dbo:City ;
+        rdfs:label     "Madang"@en ;
+        dbp:name     "Madang"@en ;
+        dbp:country  country:papua_new_guinea .

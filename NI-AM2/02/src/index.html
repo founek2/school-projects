@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            function updateText(text, field) {
+                if (field.innerHTML !== text) {
+                    console.log(text);
+                    field.innerHTML = text;
+                }
+            }
+
+            function startDownload() {
+                field = document.querySelector("#infoField");
+
+                function updateProgress(oEvent) {
+                    updateText("downloading", field);
+                    if (oEvent.lengthComputable) {
+                        const percentComplete = (oEvent.loaded / oEvent.total) * 100;
+                        console.log(percentComplete, "%");
+                    } else {
+                        // Unable to compute progress information since the total size is unknown
+                    }
+                }
+
+                function transferComplete(evt) {
+                    updateText("finished downloading", field);
+                }
+
+                function transferFailed(evt) {
+                    updateText("failed", field);
+                }
+
+                function transferCanceled(evt) {
+                    updateText("canceled", field);
+                }
+
+                var oReq = new XMLHttpRequest();
+
+                oReq.open(
+                    "GET",
+                    "https://www.stats.govt.nz/assets/Uploads/International-trade/International-trade-September-2021-quarter/Download-data/overseas-trade-indexes-September-2021-quarter-provisional-csv.csv"
+                );
+                updateText("loading", field);
+
+                oReq.addEventListener("progress", updateProgress);
+                oReq.addEventListener("load", transferComplete);
+                oReq.addEventListener("error", transferFailed);
+                oReq.addEventListener("abort", transferCanceled);
+
+                oReq.send();
+                updateText("loaded", field);
+            }
+            window.addEventListener("load", function (e) {
+                button = document.querySelector("#buttonDownload");
+
+                button.addEventListener("click", startDownload);
+            });
+        </script>
+    </head>
+    <body>
+        <button id="buttonDownload" type="button">Click Me!</button>
+        <div>
+            <p id="infoField">Začněte kliknutí na tlačítko</p>
+        </div>
+    </body>
+</html>

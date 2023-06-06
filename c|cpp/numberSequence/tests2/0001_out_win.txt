@@ -1,0 +1,8 @@
+Zadejte intervaly:
+Cifer: 2
+Nul: 1
+Sekvence: 1
+Cifer: 2
+Nul: 0
+Sekvence: 0
+Nespravny vstup.

@@ -1,0 +1,4 @@
+Sekvence:
+Operace:
+13: 1705
+11: 0

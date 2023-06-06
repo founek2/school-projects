@@ -1,0 +1,41 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/"
+           targetNamespace="https://courses.fit.cvut.cz/NI-AM1/tutorials/web-services/" elementFormDefault="qualified">
+
+    <xs:element name="getPaymentsRequest">
+        <xs:complexType>
+            <xs:sequence/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getPaymentsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="payment" type="tns:payment"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addPaymentRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="payment" type="tns:payment"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addPaymentResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="result" type="xs:boolean"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="payment">
+        <xs:sequence>
+            <xs:element name="cardNumber" type="xs:string"/>
+            <xs:element name="cardOwner" type="xs:string"/>
+            <xs:element name="id" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

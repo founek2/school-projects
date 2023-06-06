@@ -1,0 +1,20 @@
+# Find out which countries contains city over which flown airplane. 
+# Filter countries starting with letter 'C'. 
+# Show result containing country names, iso2 which will be ordered by name.
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+prefix airport:  <http://airports.dev/resource/airport/>
+prefix my: <http://localhost/vocabulary/terms/> 
+
+SELECT DISTINCT 
+	?countryName ?countryIso
+WHERE {
+    ?record a my:FlightRecord .
+    ?record my:flewOver ?city . #link
+    ?city dbp:country ?country .
+    ?country dbp:name ?countryName .
+    ?country dbo:iso31661Code ?countryIso .
+
+    FILTER(strstarts(?countryName, 'C'))
+    FILTER(strlen(?countryIso) = 2)
+} ORDER BY ?countryName

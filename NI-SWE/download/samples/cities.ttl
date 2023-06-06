@@ -1,0 +1,39 @@
+@prefix my:  <http://localhost/vocabulary/terms/> .
+@prefix dbo:  <http://dbpedia.org/ontology/> .
+@prefix geo:  <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix country:  <http://cities.dev/resource/country/> .
+@prefix dbp:  <http://dbpedia.org/property/> .
+@prefix city:  <http://cities.dev/resource/city/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix location:  <http://cities.dev/resource/location/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+city:1392685764  rdf:type  dbo:City, geo:Point ;
+        rdfs:label    "Tokyo"@en ;
+        dbp:name      "Tokyo"@en ;
+        dbp:country   country:japan ;
+        dbp:pop       "39105000"^^xsd:unsignedLong ;
+        geo:location  "POINT(35.6839 139.7744)"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry> ;
+        geo:lat       35.6839 ;
+        geo:long      139.7744 .
+
+
+country:japan  rdf:type  dbo:Country ;
+        rdfs:label  "Japan"@en ;
+        dbp:name    "Japan"@en ;
+        dbo:iso31661Code       "JP"^^xsd:string, "JPN"^^xsd:string .
+
+city:1360771077  rdf:type  dbo:City, geo:Point ;
+        rdfs:label      "Jakarta"@en ;
+        dbp:name      "Jakarta"@en ;
+        dbp:country   country:indonesia ;
+        dbp:pop       "35362000"^^xsd:unsignedLong ;
+        geo:location  "POINT(-6.2146 106.8451)"^^<http://www.openlinksw.com/schemas/virtrdf#Geometry> ;
+        geo:lat       -6.2146 ;
+        geo:long      106.8451 .
+
+country:indonesia  rdf:type  dbo:Country ;
+        rdfs:label  "Indonesia"@en ;
+        dbp:name    "Indonesia"@en ;
+        dbo:iso31661Code       "ID"^^xsd:string, "IDN"^^xsd:string .

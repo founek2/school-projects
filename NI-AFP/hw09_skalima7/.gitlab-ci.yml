@@ -1,0 +1,15 @@
+image: node:lts
+
+cache:
+  paths:
+    - node_modules/
+
+install:
+  stage: build
+  script:
+    - npm install elm elm-test
+
+test:
+  stage: test
+  script:
+    - npx elm-test

@@ -1,0 +1,108 @@
+#include <stdio.h>
+
+int loadInput(int *numSystem, long long int *min, long long int *max, char *operation) {
+    int result = scanf(" r %d : ", numSystem);
+
+    if (result == EOF)
+        return 0;
+    else if (result != 1)
+        *numSystem = 10;
+
+    result = scanf(" < %lld ; %lld > %c ", min, max, operation);
+
+    unsigned char neco = 0;
+    scanf(" %c ", &neco);
+    printf("neco> %d\n", neco);
+
+    if (result == 3 && *min >= 0 && *max >= 0 && *min <= *max
+        && (*operation == 'l' || *operation == 's' || *operation == 'z')
+        && *numSystem >= 2 && *numSystem <=36) {
+            return 1;
+    }
+    printf("Nespravny vstup.\n");
+    return 0;
+}
+
+
+long long int passInterval(long long int min, long long int max, char operation, int base) {
+    long long int counter = 0;
+
+
+    while (min <= max) {
+        long long int remainder, i = 0;
+        int heighestNull =0;
+
+        long long int value = min;
+        if (value == 0) {
+            i++;
+        }
+        while (value > 0) {
+            remainder = value % base; // Get next place value
+            value /= base; // Move over value by one place
+            //result[i++] = remainder; // Store the place value
+
+            if (operation == 's') {
+                if (remainder == 0) {
+                    heighestNull++;
+                } else {
+                    if (i < heighestNull) {
+                        i = heighestNull;
+                    }
+                    heighestNull = 0;
+                }
+            } else if (operation == 'l') {
+                i++;
+            } else if (operation == 'z') {
+                if (remainder == 0) {
+                    i++;
+                }
+            }
+        }
+        if (operation != 's'){
+            counter += i;
+        } else if (counter < i){
+            counter = i;
+        }
+        min++;
+    }
+    return counter;
+}
+
+
+int main() {
+    long long int min, max;
+    int numSystem;
+    char operation;
+
+    printf("Zadejte intervaly:\n");
+/*    if (!loadInput(&numSystem, &min, &max, &operation)) {
+        printf("Nespravny vstup.\n");
+        return 1;
+    }*/
+
+    while (loadInput(&numSystem, &min, &max, &operation)) {
+
+
+        switch (operation) {
+            case 'l': {
+                long long int result = passInterval(min, max, operation, numSystem);
+                printf("Cifer: %lld\n", result);
+                break;
+            }
+            case 's': {
+                long long int result = passInterval(min, max, operation, numSystem);
+
+                printf("Sekvence: %lld\n", result);
+                break;
+            }
+            case 'z': {
+                long long int result = passInterval(min, max, operation, numSystem);
+                printf("Nul: %lld\n", result);
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+

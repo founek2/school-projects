@@ -1,0 +1,18 @@
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix : <#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+:Wikidata a void:Dataset .
+:Cities a void:Dataset .
+
+:Wikidata_Cities a void:Linkset;
+    void:objectsTarget :Wikidata;
+    void:subjectsTarget :Cities;
+    void:linkPredicate <http://dbpedia.org/ontology/capital>
+    .
+
+<> a void:DatasetDescription;
+    dcterms:title "Přidání hlavních měst ke všem zemím"@cs;
+    dcterms:description "Linkování na základě výběru všech hlavních měst a následného zpětnoho nalezení příslušné země a porovnání jejího názvu se zemí z datasetu Cities"@cs;
+    dcterms:creator <https://martin.skalicky.cz/#me>;
+    .
